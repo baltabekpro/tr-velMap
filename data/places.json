@@ -1,0 +1,310 @@
+{
+  "projectName": "trАvelMap",
+  "version": "1.0.0",
+  "description": "Алматы қаласының интерактивті демалыс орындары гиді",
+  "author": "trАvelMap Team",
+  "places": [
+    {
+      "id": 1,
+      "name": "Медеу",
+      "nameKk": "Медеу",
+      "nameRu": "Медео",
+      "nameEn": "Medeu",
+      "description": {
+        "kk": "Әлемге әйгілі биіктегі мұз айдыны. Тамаша көрініс және спорт орны.",
+        "ru": "Всемирно известный высокогорный каток. Потрясающие виды и спортивный объект.",
+        "en": "World-famous high-altitude ice rink. Stunning views and sports facility."
+      },
+      "coordinates": {
+        "latitude": 43.157496,
+        "longitude": 77.059031
+      },
+      "category": "sports",
+      "tags": ["спорт", "каток", "горы", "зима"],
+      "rating": 4.8,
+      "reviewsCount": 2547,
+      "images": [
+        "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=2070",
+        "medeu_1.jpg",
+        "medeu_2.jpg"
+      ],
+      "details": {
+        "workingHours": {
+          "weekdays": "09:00 - 21:00",
+          "weekends": "08:00 - 22:00"
+        },
+        "price": {
+          "min": 2000,
+          "max": 5000,
+          "currency": "KZT"
+        },
+        "transport": [
+          {
+            "type": "bus",
+            "number": "6",
+            "description": "Алматы орталығынан №6 автобус"
+          },
+          {
+            "type": "taxi",
+            "description": "Такси ~3000-4000₸"
+          }
+        ],
+        "bestTime": "Қыс айлары (желтоқсан - наурыз)",
+        "facilities": ["Коньки прокаты", "Кафе", "Туалет", "Паркинг"],
+        "website": "http://medeu.kz",
+        "phone": "+7 (727) 242-50-50"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Көктөбе",
+      "nameKk": "Көктөбе",
+      "nameRu": "Кок-Тобе",
+      "nameEn": "Kok-Tobe",
+      "description": {
+        "kk": "Алматының символы. Аспалы жол, көрініс алаңы және көңіл көтеру орны.",
+        "ru": "Символ Алматы. Канатная дорога, смотровая площадка и развлечения.",
+        "en": "Symbol of Almaty. Cable car, observation deck and entertainment."
+      },
+      "coordinates": {
+        "latitude": 43.234306,
+        "longitude": 76.975586
+      },
+      "category": "attraction",
+      "tags": ["көрініс", "аспалы жол", "мейрамхана", "саябақ"],
+      "rating": 4.9,
+      "reviewsCount": 4821,
+      "images": [
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070",
+        "koktobe_1.jpg",
+        "koktobe_2.jpg"
+      ],
+      "details": {
+        "workingHours": {
+          "weekdays": "10:00 - 23:00",
+          "weekends": "10:00 - 00:00"
+        },
+        "price": {
+          "cablecar": 1500,
+          "entrance": 500,
+          "currency": "KZT"
+        },
+        "transport": [
+          {
+            "type": "cablecar",
+            "description": "Аспалы жол (Достық даңғылынан)"
+          },
+          {
+            "type": "taxi",
+            "description": "Такси жоғарыға ~2000₸"
+          }
+        ],
+        "bestTime": "Кез келген маусым, кешкісін ерекше әдемі",
+        "facilities": ["Мейрамхана", "Кафе", "Сувенир дүкендері", "Паркинг", "Балалар алаңы"],
+        "website": "http://koktobe.com.kz",
+        "phone": "+7 (727) 272-60-10"
+      }
+    },
+    {
+      "id": 3,
+      "name": "БАО (Үлкен Алматы көлі)",
+      "nameKk": "Үлкен Алматы көлі",
+      "nameRu": "Большое Алматинское озеро",
+      "nameEn": "Big Almaty Lake",
+      "description": {
+        "kk": "Таулардағы нақты алтын - көгілдір көл. Табиғат сүйгіштеріне арналған.",
+        "ru": "Настоящая жемчужина гор - голубое озеро. Для любителей природы.",
+        "en": "Real mountain gem - blue lake. For nature lovers."
+      },
+      "coordinates": {
+        "latitude": 43.052173,
+        "longitude": 76.983940
+      },
+      "category": "nature",
+      "tags": ["табиғат", "көл", "таулар", "фото"],
+      "rating": 5.0,
+      "reviewsCount": 3245,
+      "images": [
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070",
+        "bao_1.jpg",
+        "bao_2.jpg"
+      ],
+      "details": {
+        "workingHours": {
+          "weekdays": "Тәулік бойы",
+          "weekends": "Тәулік бойы"
+        },
+        "price": {
+          "min": 0,
+          "max": 0,
+          "currency": "KZT",
+          "note": "Тегін кіру"
+        },
+        "transport": [
+          {
+            "type": "car",
+            "description": "Тек жеке көлікпен немесе таксимен"
+          },
+          {
+            "type": "taxi",
+            "description": "Такси ~5000-7000₸"
+          }
+        ],
+        "bestTime": "Жаз-күз айлары (маусым - қазан)",
+        "facilities": ["Смотровая площадка", "Пикник орындары"],
+        "warnings": ["Жүзуге тыйым салынған", "Суық ауа - жылы киініңіз"],
+        "phone": "+7 (727) 263-13-51"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Esentai Mall",
+      "nameKk": "Есентай молл",
+      "nameRu": "Есентай молл",
+      "nameEn": "Esentai Mall",
+      "description": {
+        "kk": "Қаланың ең үлкен сауда орталығы. Сауда, тамақтану және көңіл көтеру.",
+        "ru": "Крупнейший торговый центр города. Шопинг, рестораны и развлечения.",
+        "en": "The largest shopping center in the city. Shopping, restaurants and entertainment."
+      },
+      "coordinates": {
+        "latitude": 43.218501,
+        "longitude": 76.927894
+      },
+      "category": "shopping",
+      "tags": ["сауда", "мейрамхана", "кинотеатр", "брендтер"],
+      "rating": 4.7,
+      "reviewsCount": 5632,
+      "images": [
+        "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?q=80&w=2070",
+        "esentai_1.jpg",
+        "esentai_2.jpg"
+      ],
+      "details": {
+        "workingHours": {
+          "weekdays": "10:00 - 22:00",
+          "weekends": "10:00 - 23:00"
+        },
+        "price": {
+          "note": "Әр түрлі бағалар",
+          "currency": "KZT"
+        },
+        "transport": [
+          {
+            "type": "bus",
+            "description": "Барлық қоғамдық көлік"
+          },
+          {
+            "type": "metro",
+            "description": "Жақын станция: Абай"
+          }
+        ],
+        "bestTime": "Кез келген уақыт",
+        "facilities": ["Кинотеатр", "Фитнес", "Мейрамханалар", "Бутиктер", "Паркинг"],
+        "website": "http://esentaimall.kz",
+        "phone": "+7 (727) 258-58-88"
+      }
+    },
+    {
+      "id": 5,
+      "name": "Бірінші Президент паркі",
+      "nameKk": "Бірінші Президент паркі",
+      "nameRu": "Парк Первого Президента",
+      "nameEn": "First President's Park",
+      "description": {
+        "kk": "Қаланың орталығындағы үлкен және әдемі парк. Серуендеуге тамаша орын.",
+        "ru": "Большой и красивый парк в центре города. Отличное место для прогулок.",
+        "en": "Large and beautiful park in the city center. Great place for walks."
+      },
+      "coordinates": {
+        "latitude": 43.187184,
+        "longitude": 76.886580
+      },
+      "category": "park",
+      "tags": ["парк", "серуен", "тыныштық", "отбасылық"],
+      "rating": 4.6,
+      "reviewsCount": 1876,
+      "images": [
+        "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070",
+        "park_1.jpg",
+        "park_2.jpg"
+      ],
+      "details": {
+        "workingHours": {
+          "weekdays": "06:00 - 23:00",
+          "weekends": "06:00 - 00:00"
+        },
+        "price": {
+          "min": 0,
+          "max": 0,
+          "currency": "KZT",
+          "note": "Тегін кіру"
+        },
+        "transport": [
+          {
+            "type": "metro",
+            "description": "Метро: Абай станциясы"
+          },
+          {
+            "type": "bus",
+            "description": "Көптеген автобус маршруттары"
+          }
+        ],
+        "bestTime": "Көктем-жаз (сәуір - қыркүйек)",
+        "facilities": ["Велосипед жолдары", "Балалар алаңдары", "Кафе", "Фонтандар"],
+        "phone": "+7 (727) 291-23-45"
+      }
+    },
+    {
+      "id": 6,
+      "name": "Шымбұлақ",
+      "nameKk": "Шымбұлақ",
+      "nameRu": "Шымбулак",
+      "nameEn": "Shymbulak",
+      "description": {
+        "kk": "Тау-шаңғы курорты. Қыста шаңғы, жазда серуендеу үшін керемет.",
+        "ru": "Горнолыжный курорт. Зимой катание, летом прогулки.",
+        "en": "Ski resort. Winter skiing, summer walks."
+      },
+      "coordinates": {
+        "latitude": 43.120643,
+        "longitude": 77.096188
+      },
+      "category": "sports",
+      "tags": ["шаңғы", "спорт", "курорт", "таулар"],
+      "rating": 4.9,
+      "reviewsCount": 3421,
+      "images": [
+        "https://images.unsplash.com/photo-1551582045-6ec9c11d8697?q=80&w=2070",
+        "shymbulak_1.jpg",
+        "shymbulak_2.jpg"
+      ],
+      "details": {
+        "workingHours": {
+          "winter": "09:00 - 17:00",
+          "summer": "10:00 - 18:00"
+        },
+        "price": {
+          "skiPass": 8000,
+          "rental": 5000,
+          "gondola": 3000,
+          "currency": "KZT"
+        },
+        "transport": [
+          {
+            "type": "gondola",
+            "description": "Гондол Медеуден"
+          },
+          {
+            "type": "taxi",
+            "description": "Такси ~4000-6000₸"
+          }
+        ],
+        "bestTime": "Қыс (желтоқсан - наурыз) - шаңғы тебу үшін",
+        "facilities": ["Шаңғы прокаты", "Мейрамханалар", "Қонақүйлер", "Медицина пункті"],
+        "website": "http://shymbulak.com",
+        "phone": "+7 (727) 278-44-44"
+      }
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>trАvelMap — Алматы интерактивті гиді 🌍</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <!-- Бастапқы бет / Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1 class="hero-title"><i class="fa-solid fa-mountain-sun"></i> Алматыны танып білейік!</h1>
+                <p class="hero-subtitle">Қаланың ең әдемі демалыс орындары мен жасырын жерлерін табыңыз</p>
+                <button class="explore-btn" onclick="scrollToSection('places')">
+                    <i class="fa-solid fa-compass"></i> Зерттеуді бастау
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><i class="fa-solid fa-map-location-dot"></i> trАvelMap</div>
+            <ul class="nav-menu">
+                <li><a href="#hero"><i class="fa-solid fa-house"></i> Басты бет</a></li>
+                <li><a href="#places"><i class="fa-solid fa-location-dot"></i> Орындар</a></li>
+                <li><a href="#map"><i class="fa-solid fa-map"></i> Карта</a></li>
+                <li><a href="#chatbot"><i class="fa-solid fa-comments"></i> Чатбот</a></li>
+                <li><a href="monitor.html"><i class="fa-solid fa-chart-line"></i> Мониторинг</a></li>
+                <li><a href="#" id="user-menu-btn"><i class="fa-solid fa-user"></i> <span id="user-name">Кіру</span></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Орындар бөлімі / Places Section -->
+    <section id="places" class="places-section">
+        <div class="container">
+            <h2 class="section-title"><i class="fa-solid fa-mountain-city"></i> Алматының демалыс орындары</h2>
+            <p class="section-description">Қаланың ең танымал және көркем орындары</p>
+            
+            <div id="places-grid" class="places-grid">
+                <!-- Орындар динамикалы түрде жүктеледі placesService.js арқылы -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Карта бөлімі / Map Section -->
+    <section id="map" class="map-section">
+        <div class="container">
+            <h2 class="section-title"><i class="fa-solid fa-map-marked-alt"></i> Интерактивті карта</h2>
+            <p class="section-description">Барлық орындарды картадан қарап, бағыт алыңыз</p>
+            
+            <div id="almaty-map" class="map-container">
+                <!-- Leaflet картасы жүктеледі -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Чатбот бөлімі / ChatBot Section -->
+    <section id="chatbot" class="chatbot-section">
+        <div class="container">
+            <h2 class="section-title"><i class="fa-solid fa-robot"></i> Виртуалды көмекші</h2>
+            <p class="section-description">Сұрақтарыңызды қойыңыз, кеңес алыңыз!</p>
+            
+            <div class="chatbot-container">
+                <div class="chat-header">
+                    <div class="bot-avatar"><i class="fa-solid fa-user-robot"></i></div>
+                    <div class="bot-info">
+                        <h3>CityBuddy</h3>
+                        <span class="status online">Онлайн</span>
+                    </div>
+                </div>
+                
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Хабарламалар динамикалы түрде қосылады -->
+                    <div class="message bot-message">
+                        <div class="message-avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div class="message-bubble">
+                            Сәлем! Мен сіздің виртуалды гидіңізбін. Алматы туралы не білгіңіз келеді? <i class="fa-solid fa-sparkles"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Сұрағыңызды жазыңыз...">
+                    <button id="send-btn" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <!-- Ауа райы панелі -->
+            <div id="weather-panel" class="weather-panel">
+                <!-- Ауа райы ақпараты weatherService.js арқылы жүктеледі -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fa-solid fa-map-location-dot"></i> trАvelMap</h4>
+                    <p>Алматыны танып білудің ең жақсы жолы</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Байланыс</h4>
+                    <p><i class="fa-solid fa-envelope"></i> info@travelmap.kz</p>
+                    <p><i class="fa-solid fa-phone"></i> +7 (727) 123-45-67</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Әлеуметтік желілер</h4>
+                    <p>
+                        <i class="fa-brands fa-facebook"></i> Facebook | 
+                        <i class="fa-brands fa-instagram"></i> Instagram | 
+                        <i class="fa-brands fa-twitter"></i> Twitter
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 trАvelMap. Барлық құқықтар қорғалған.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Микросервистер -->
+    <script src="js/placesService.js"></script>
+    <script src="js/weatherService.js"></script>
+    <script src="js/mapService.js"></script>
+    <script src="js/chatService.js"></script>
+
+    <!-- Негізгі скрипт -->
+    <script>
+        // Плавный скролл
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Navbar скролл эффекті
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fade-in анимациясы
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+
+    <!-- SQL.js Library -->
+    <script src="https://sql.js.org/dist/sql-wasm.js"></script>
+    
+    <!-- Database Service -->
+    <script src="js/databaseService.js"></script>
+    
+    <!-- User Service -->
+    <script src="js/userService.js"></script>
+    <script>
+        // Қолданушы менюін жүктеу
+        document.addEventListener('DOMContentLoaded', async function() {
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userNameSpan = document.getElementById('user-name');
+            
+            // Дерекқор дайын болғанша күту
+            await UserService.init();
+            
+            const currentUser = UserService.getCurrentUser();
+            if (currentUser) {
+                userNameSpan.textContent = currentUser.username;
+                userMenuBtn.href = 'profile.html';
+            } else {
+                userNameSpan.textContent = 'Кіру';
+                userMenuBtn.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

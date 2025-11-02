@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - trАvelMap</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 120px auto 50px;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--primary-color);
+        }
+
+        .profile-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-role {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        .stat-label {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 2rem;
+            height: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--light-text);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: var(--primary-color);
+        }
+
+        .main-content {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--light-text);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            background: var(--dark-bg);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            color: var(--light-text);
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .services-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .service-item {
+            background: var(--dark-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 968px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><i class="fa-solid fa-map-location-dot"></i> trАvelMap</div>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Басты бет</a></li>
+                <li><a href="monitor.html"><i class="fa-solid fa-chart-line"></i> Мониторинг</a></li>
+                <li><a href="profile.html"><i class="fa-solid fa-user"></i> Профиль</a></li>
+                <li><a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Шығу</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-header" id="profile-header">
+            <!-- Динамикалық жүктелетін -->
+        </div>
+
+        <div class="profile-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#" class="active" data-section="overview">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            Шолу
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-section="settings">
+                            <i class="fa-solid fa-gear"></i>
+                            Баптаулар
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-section="services">
+                            <i class="fa-solid fa-server"></i>
+                            Сервистер
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin.html" id="admin-link" style="display: none;">
+                            <i class="fa-solid fa-user-shield"></i>
+                            Админ панелі
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="main-content">
+                <!-- Шолу бөлімі -->
+                <div id="overview" class="content-section active">
+                    <h2><i class="fa-solid fa-chart-pie"></i> Жалпы шолу</h2>
+                    <p style="color: var(--gray-text); margin-bottom: 2rem;">Сіздің жеке статистикаңыз</p>
+
+                    <div class="services-list">
+                        <div class="service-item">
+                            <div class="service-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <h3>Орындар</h3>
+                            <p style="color: var(--gray-text);">6 орын қолжетімді</p>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-icon"><i class="fa-solid fa-map"></i></div>
+                            <h3>Карта</h3>
+                            <p style="color: var(--gray-text);">Leaflet.js</p>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-icon"><i class="fa-solid fa-comments"></i></div>
+                            <h3>Чат-бот</h3>
+                            <p style="color: var(--gray-text);">Екі тілді</p>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                            <h3>Ауа райы</h3>
+                            <p style="color: var(--gray-text);">Open-Meteo API</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Баптаулар бөлімі -->
+                <div id="settings" class="content-section">
+                    <h2><i class="fa-solid fa-gear"></i> Баптаулар</h2>
+                    <p style="color: var(--gray-text); margin-bottom: 2rem;">Профиліңізді басқарыңыз</p>
+
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label for="fullName">Толық аты</label>
+                            <input type="text" id="fullName" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="language">Тіл</label>
+                            <select id="language" class="form-control">
+                                <option value="kk">Қазақша</option>
+                                <option value="ru">Русский</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="theme">Тақырып</label>
+                            <select id="theme" class="form-control">
+                                <option value="dark">Қараңғы</option>
+                                <option value="light">Ашық</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-save"></i>
+                            Сақтау
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Сервистер бөлімі -->
+                <div id="services" class="content-section">
+                    <h2><i class="fa-solid fa-server"></i> Менің сервистерім</h2>
+                    <p style="color: var(--gray-text); margin-bottom: 2rem;">Сіз қолданатын сервистер</p>
+
+                    <div class="services-list">
+                        <a href="service-details.html?service=places" style="text-decoration: none; color: inherit;">
+                            <div class="service-item">
+                                <div class="service-icon"><i class="fa-solid fa-location-dot"></i></div>
+                                <h3>Орындар сервисі</h3>
+                                <p style="color: var(--accent-green);">Белсенді</p>
+                            </div>
+                        </a>
+
+                        <a href="service-details.html?service=map" style="text-decoration: none; color: inherit;">
+                            <div class="service-item">
+                                <div class="service-icon"><i class="fa-solid fa-map"></i></div>
+                                <h3>Карта сервисі</h3>
+                                <p style="color: var(--accent-green);">Белсенді</p>
+                            </div>
+                        </a>
+
+                        <a href="service-details.html?service=chat" style="text-decoration: none; color: inherit;">
+                            <div class="service-item">
+                                <div class="service-icon"><i class="fa-solid fa-comments"></i></div>
+                                <h3>Чат сервисі</h3>
+                                <p style="color: var(--accent-green);">Белсенді</p>
+                            </div>
+                        </a>
+
+                        <a href="service-details.html?service=weather" style="text-decoration: none; color: inherit;">
+                            <div class="service-item">
+                                <div class="service-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                                <h3>Ауа райы сервисі</h3>
+                                <p style="color: var(--accent-green);">Белсенді</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SQL.js Library -->
+    <script src="https://sql.js.org/dist/sql-wasm.js"></script>
+    
+    <!-- Database Service -->
+    <script src="js/databaseService.js"></script>
+    
+    <!-- User Service -->
+    <script src="js/userService.js"></script>
+    <script>
+        // Аутентификацияны тексеру
+        (async () => {
+            await UserService.init();
+            
+            const user = UserService.getCurrentUser();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Профиль header жүктеу
+            document.getElementById('profile-header').innerHTML = `
+                <img src="${user.avatar}" alt="${user.full_name}" class="profile-avatar">
+                <div class="profile-info">
+                    <h1>${user.full_name}</h1>
+                    <span class="profile-role"><i class="fa-solid fa-${user.role === 'admin' ? 'user-shield' : 'user'}"></i> ${user.role === 'admin' ? 'Әкімші' : 'Қолданушы'}</span>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">4</div>
+                        <div class="stat-label">Сервистер</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${user.isActive ? 'Белсенді' : 'Белсенді емес'}</div>
+                        <div class="stat-label">Статус</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            // Админ сілтемесін көрсету
+            if (user.role === 'admin') {
+                document.getElementById('admin-link').style.display = 'block';
+            }
+
+            // Баптауларды жүктеу
+            document.getElementById('fullName').value = user.full_name || '';
+            document.getElementById('email').value = user.email || '';
+        })();
+
+        // Мәзір навигациясы
+        document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Белсенді класты өзгерту
+                document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Бөлімді өзгерту
+                const section = link.dataset.section;
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+            });
+        });
+
+        // Баптауларды сақтау
+        document.getElementById('settings-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const updates = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                preferences: {
+                    language: document.getElementById('language').value,
+                    theme: document.getElementById('theme').value,
+                    notifications: user.preferences.notifications
+                }
+            };
+            
+            const result = updateUser(user.id, updates);
+            
+            if (result.success) {
+                alert('✅ Баптаулар сақталды!');
+                location.reload();
+            } else {
+                alert('❌ Қате: ' + result.message);
+            }
+        });
+
+        // Шығу
+        function logout() {
+            logoutUser();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
