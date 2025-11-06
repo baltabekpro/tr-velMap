@@ -1,2092 +1,617 @@
-<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="kk">
-
-<head><html lang="kk">
-
+<head>
     <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><head><html lang="kk"><html lang="ru">
-
-    <title>TravelMap - Мониторинг Сервистері</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">    <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelMap - Микросервистерді бақылау</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-
-        * {    <meta name="viewport" content="width=device-width, initial-scale=1.0"><head><head>
-
-            margin: 0;
-
-            padding: 0;    <title>TravelMap - Мониторинг Сервистері</title>
-
-            box-sizing: border-box;
-
-        }    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">    <meta charset="UTF-8">    <meta charset="UTF-8">
-
-
-
-        body {    <style>
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);        * {    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-
-            padding: 20px;            margin: 0;
-
+            padding: 20px;
         }
-
-            padding: 0;    <title>TravelMap - Мониторинг Сервистері</title>    <title>trАvelMap - Микросервистерді бақылау</title>
-
-        .monitor-container {
-
-            max-width: 1400px;            box-sizing: border-box;
-
-            margin: 0 auto;
-
-        }        }    <link rel="stylesheet" href="styles.css">    
-
-
-
+        
+        .monitor-container { max-width: 1600px; margin: 0 auto; }
+        
         .header {
-
             background: rgba(255, 255, 255, 0.95);
-
-            border-radius: 20px;        body {    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">    <!-- Font Awesome Icons -->
-
+            border-radius: 20px;
             padding: 30px;
-
-            margin-bottom: 30px;            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-
-        }            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    <style>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-
-
-        .header h1 {            min-height: 100vh;
-
-            color: #667eea;
-
-            font-size: 2.5rem;            padding: 20px;        .monitor-container {    
-
-            margin-bottom: 10px;
-
-            display: flex;        }
-
-            align-items: center;
-
-            gap: 15px;            min-height: 100vh;    <style>
-
-        }
-
-        .monitor-container {
-
-        .header p {
-
-            color: #666;            max-width: 1400px;            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);        * {
-
-            font-size: 1.1rem;
-
-        }            margin: 0 auto;
-
-
-
-        .status-summary {        }            padding: 40px 20px;            margin: 0;
-
-            display: grid;
-
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
-            gap: 20px;
-
-            margin-bottom: 30px;        .monitor-header {        }            padding: 0;
-
-        }
-
-            text-align: center;
-
-        .summary-card {
-
-            background: rgba(255, 255, 255, 0.95);            color: white;            box-sizing: border-box;
-
-            border-radius: 15px;
-
-            padding: 25px;            margin-bottom: 40px;
-
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-
-            transition: transform 0.3s ease;        }        .monitor-header {        }
-
-        }
-
-
-
-        .summary-card:hover {
-
-            transform: translateY(-5px);        .monitor-header h1 {            text-align: center;
-
-        }
-
-            font-size: 3rem;
-
-        .summary-card h3 {
-
-            color: #333;            margin-bottom: 10px;            color: white;        :root {
-
-            font-size: 1rem;
-
-            margin-bottom: 15px;            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-
-            text-transform: uppercase;
-
-            letter-spacing: 1px;        }            margin-bottom: 40px;            --primary-color: #2563eb;
-
-        }
-
-
-
-        .summary-value {
-
-            font-size: 2.5rem;        .monitor-header p {        }            --success-color: #22c55e;
-
-            font-weight: bold;
-
-            margin-bottom: 10px;            font-size: 1.2rem;
-
-        }
-
-            opacity: 0.9;            --warning-color: #f59e0b;
-
-        .summary-card.total .summary-value {
-
-            color: #667eea;        }
-
-        }
-
-        .monitor-header h1 {            --danger-color: #ef4444;
-
-        .summary-card.online .summary-value {
-
-            color: #10b981;        .controls {
-
-        }
-
-            display: flex;            font-size: 3rem;            --dark-bg: #0f172a;
-
-        .summary-card.offline .summary-value {
-
-            color: #ef4444;            justify-content: center;
-
-        }
-
-            gap: 20px;            margin-bottom: 10px;            --dark-card: #1e293b;
-
-        .summary-card.uptime .summary-value {
-
-            color: #f59e0b;            margin-bottom: 30px;
-
-        }
-
-            flex-wrap: wrap;        }            --light-text: #f1f5f9;
-
-        .controls {
-
-            background: rgba(255, 255, 255, 0.95);        }
-
-            border-radius: 15px;
-
-            padding: 20px;            --gray-text: #94a3b8;
-
             margin-bottom: 30px;
-
-            display: flex;        .refresh-btn {
-
-            gap: 15px;
-
-            align-items: center;            padding: 12px 30px;        .monitor-header p {        }
-
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-
-        }            background: white;
-
-
-
-        .btn {            color: #667eea;            font-size: 1.2rem;
-
-            padding: 12px 25px;
-
-            border: none;            border: none;
-
-            border-radius: 8px;
-
-            font-size: 1rem;            border-radius: 50px;            opacity: 0.9;        body {
-
-            cursor: pointer;
-
-            transition: all 0.3s ease;            font-weight: bold;
-
-            display: flex;
-
-            align-items: center;            cursor: pointer;        }            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-            gap: 10px;
-
-        }            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-
-
-
-        .btn-primary {            transition: all 0.3s;            background: var(--dark-bg);
-
-            background: #667eea;
-
-            color: white;            display: flex;
-
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.5s ease;
         }
-
-            align-items: center;        .refresh-btn {            color: var(--light-text);
-
-        .btn-primary:hover {
-
-            background: #5568d3;            gap: 10px;
-
-        }
-
-        }            position: fixed;            padding: 2rem;
-
-        .btn-secondary {
-
-            background: #10b981;
-
-            color: white;
-
-        }        .refresh-btn:hover {            top: 20px;        }
-
-
-
-        .btn-secondary:hover {            transform: translateY(-2px);
-
-            background: #059669;
-
-        }            box-shadow: 0 6px 20px rgba(0,0,0,0.3);            right: 20px;
-
-
-
-        .toggle-switch {        }
-
-            display: flex;
-
-            align-items: center;            padding: 12px 24px;        .container {
-
-            gap: 10px;
-
-            margin-left: auto;        .auto-refresh {
-
-        }
-
-            background: rgba(255,255,255,0.2);            background: white;            max-width: 1400px;
-
-        .switch {
-
-            position: relative;            padding: 12px 20px;
-
-            display: inline-block;
-
-            width: 60px;            border-radius: 50px;            color: #667eea;            margin: 0 auto;
-
-            height: 34px;
-
-        }            color: white;
-
-
-
-        .switch input {            display: flex;            border: none;        }
-
-            opacity: 0;
-
-            width: 0;            align-items: center;
-
-            height: 0;
-
-        }            gap: 10px;            border-radius: 50px;
-
-
-
-        .slider {        }
-
-            position: absolute;
-
-            cursor: pointer;            font-weight: bold;        header {
-
-            top: 0;
-
-            left: 0;        .auto-refresh input[type="checkbox"] {
-
-            right: 0;
-
-            bottom: 0;            width: 20px;            cursor: pointer;            text-align: center;
-
-            background-color: #ccc;
-
-            transition: .4s;            height: 20px;
-
-            border-radius: 34px;
-
-        }            cursor: pointer;            box-shadow: 0 4px 15px rgba(0,0,0,0.2);            margin-bottom: 3rem;
-
-
-
-        .slider:before {        }
-
-            position: absolute;
-
-            content: "";            transition: all 0.3s;            padding-bottom: 2rem;
-
-            height: 26px;
-
-            width: 26px;        .services-grid {
-
-            left: 4px;
-
-            bottom: 4px;            display: grid;        }            border-bottom: 2px solid var(--dark-card);
-
-            background-color: white;
-
-            transition: .4s;            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-
-            border-radius: 50%;
-
-        }            gap: 30px;        }
-
-
-
-        input:checked + .slider {            margin-bottom: 30px;
-
-            background-color: #10b981;
-
-        }        }        .refresh-btn:hover {
-
-
-
-        input:checked + .slider:before {
-
-            transform: translateX(26px);
-
-        }        .service-card {            transform: translateY(-2px);        h1 {
-
-
-
-        .services-grid {            background: white;
-
-            display: grid;
-
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));            border-radius: 16px;            box-shadow: 0 6px 20px rgba(0,0,0,0.3);            font-size: 3rem;
-
-            gap: 25px;
-
-            margin-bottom: 30px;            padding: 30px;
-
-        }
-
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);        }            margin-bottom: 1rem;
-
-        .service-card {
-
-            background: rgba(255, 255, 255, 0.95);            transition: all 0.3s;
-
-            border-radius: 15px;
-
-            padding: 25px;            position: relative;            display: flex;
-
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-
-            transition: all 0.3s ease;            overflow: hidden;
-
-            position: relative;
-
-            overflow: hidden;        }        .auto-refresh {            align-items: center;
-
-        }
-
-
-
-        .service-card::before {
-
-            content: '';        .service-card:hover {            text-align: center;            justify-content: center;
-
-            position: absolute;
-
-            top: 0;            transform: translateY(-5px);
-
-            left: 0;
-
-            width: 5px;            box-shadow: 0 15px 40px rgba(0,0,0,0.3);            color: white;            gap: 1rem;
-
-            height: 100%;
-
-            background: var(--status-color);        }
-
-        }
-
-            margin-bottom: 30px;        }
-
-        .service-card.online {
-
-            --status-color: #10b981;        .service-status {
-
-        }
-
-            position: absolute;        }
-
-        .service-card.offline {
-
-            --status-color: #ef4444;            top: 0;
-
-        }
-
-            left: 0;        .subtitle {
-
-        .service-card:hover {
-
-            transform: translateY(-5px);            width: 100%;
-
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
-        }            height: 6px;        .auto-refresh label {            color: var(--gray-text);
-
-
-
-        .service-header {        }
-
-            display: flex;
-
-            justify-content: space-between;            display: flex;            font-size: 1.2rem;
-
-            align-items: center;
-
-            margin-bottom: 20px;        .service-status.online {
-
-        }
-
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);            align-items: center;        }
-
-        .service-name {
-
-            font-size: 1.3rem;        }
-
-            font-weight: bold;
-
-            color: #333;            justify-content: center;
-
-            display: flex;
-
-            align-items: center;        .service-status.offline {
-
-            gap: 10px;
-
-        }            background: linear-gradient(90deg, #F44336, #E91E63);            gap: 10px;        .controls {
-
-
-
-        .service-icon {        }
-
-            font-size: 1.5rem;
-
-        }            font-size: 1.1rem;            display: flex;
-
-
-
-        .status-badge {        .service-header {
-
-            padding: 8px 16px;
-
-            border-radius: 20px;            display: flex;        }            gap: 1rem;
-
-            font-size: 0.9rem;
-
-            font-weight: bold;            align-items: center;
-
-            text-transform: uppercase;
-
-        }            gap: 15px;            justify-content: center;
-
-
-
-        .status-badge.online {            margin-bottom: 20px;
-
-            background: #d1fae5;
-
-            color: #065f46;        }        .auto-refresh input[type="checkbox"] {            margin-bottom: 2rem;
-
-        }
-
-
-
-        .status-badge.offline {
-
-            background: #fee2e2;        .service-icon {            width: 20px;            flex-wrap: wrap;
-
-            color: #991b1b;
-
-        }            width: 60px;
-
-
-
-        .service-details {            height: 60px;            height: 20px;        }
-
-            display: grid;
-
-            gap: 15px;            border-radius: 12px;
-
-        }
-
-            display: flex;            cursor: pointer;
-
-        .detail-row {
-
-            display: flex;            align-items: center;
-
-            justify-content: space-between;
-
-            align-items: center;            justify-content: center;        }        .control-btn {
-
-            padding: 10px;
-
-            background: rgba(0, 0, 0, 0.03);            font-size: 2rem;
-
-            border-radius: 8px;
-
-        }            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);            padding: 0.8rem 1.5rem;
-
-
-
-        .detail-label {            color: white;
-
-            color: #666;
-
-            font-weight: 500;        }        .services-grid {            border: none;
-
-        }
-
-
-
-        .detail-value {
-
-            color: #333;        .service-info h3 {            max-width: 1400px;            border-radius: 10px;
-
-            font-weight: bold;
-
-        }            font-size: 1.5rem;
-
-
-
-        .url-link {            margin: 0;            margin: 0 auto;            cursor: pointer;
-
+        
+        .header h1 {
             color: #667eea;
-
-            text-decoration: none;            color: #333;
-
-            word-break: break-all;
-
-        }        }            display: grid;            font-size: 1rem;
-
-
-
-        .url-link:hover {
-
-            text-decoration: underline;
-
-        }        .service-badge {            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));            display: flex;
-
-
-
-        .error-message {            display: inline-block;
-
-            background: #fee2e2;
-
-            color: #991b1b;            padding: 4px 12px;            gap: 30px;            align-items: center;
-
-            padding: 15px;
-
-            border-radius: 8px;            border-radius: 20px;
-
-            margin-top: 15px;
-
-            font-size: 0.9rem;            font-size: 0.85rem;        }            gap: 0.5rem;
-
-        }
-
-            font-weight: bold;
-
-        .last-update {
-
-            text-align: center;            margin-top: 5px;            transition: all 0.3s ease;
-
-            color: rgba(255, 255, 255, 0.9);
-
-            font-size: 0.9rem;        }
-
-            margin-top: 20px;
-
-            padding: 15px;        .service-card {            color: white;
-
-            background: rgba(0, 0, 0, 0.2);
-
-            border-radius: 10px;        .service-badge.online {
-
-        }
-
-            background: #4CAF50;            background: white;        }
-
-        .loading {
-
-            text-align: center;            color: white;
-
-            padding: 50px;
-
-            color: white;        }            border-radius: 16px;
-
-            font-size: 1.5rem;
-
-        }
-
-
-
-        .spinner {        .service-badge.offline {            padding: 30px;        .control-btn.start-all {
-
-            border: 4px solid rgba(255, 255, 255, 0.3);
-
-            border-top: 4px solid white;            background: #F44336;
-
-            border-radius: 50%;
-
-            width: 50px;            color: white;            box-shadow: 0 10px 30px rgba(0,0,0,0.2);            background: var(--success-color);
-
-            height: 50px;
-
-            animation: spin 1s linear infinite;        }
-
-            margin: 0 auto 20px;
-
-        }            transition: all 0.3s;        }
-
-
-
-        @keyframes spin {        .service-details {
-
-            0% { transform: rotate(0deg); }
-
-            100% { transform: rotate(360deg); }            margin-top: 20px;            position: relative;
-
-        }
-
-        }
-
-        .log-section {
-
-            background: rgba(255, 255, 255, 0.95);            overflow: hidden;        .control-btn.stop-all {
-
-            border-radius: 15px;
-
-            padding: 25px;        .detail-row {
-
-            margin-top: 30px;
-
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);            display: flex;        }            background: var(--danger-color);
-
-        }
-
-            justify-content: space-between;
-
-        .log-section h2 {
-
-            color: #333;            padding: 12px 0;        }
-
-            margin-bottom: 20px;
-
-            display: flex;            border-bottom: 1px solid #f0f0f0;
-
-            align-items: center;
-
-            gap: 10px;        }        .service-card:hover {
-
-        }
-
-
-
-        .log-entries {
-
-            max-height: 400px;        .detail-row:last-child {            transform: translateY(-5px);        .control-btn.refresh {
-
-            overflow-y: auto;
-
-            background: rgba(0, 0, 0, 0.03);            border-bottom: none;
-
-            border-radius: 8px;
-
-            padding: 15px;        }            box-shadow: 0 15px 40px rgba(0,0,0,0.3);            background: var(--primary-color);
-
-        }
-
-
-
-        .log-entry {
-
-            padding: 10px;        .detail-label {        }        }
-
+            font-size: 2.5rem;
             margin-bottom: 10px;
-
-            border-left: 3px solid #667eea;            color: #666;
-
-            background: white;
-
-            border-radius: 5px;            font-weight: 600;
-
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-
+        
+        .header p { color: #666; font-size: 1.1rem; }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            animation: slideDown 0.6s ease;
         }
-
-        .log-entry.error {
-
-            border-left-color: #ef4444;        .service-status {        .control-btn:hover {
-
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
-        .detail-value {
-
-        .log-entry.success {
-
-            border-left-color: #10b981;            color: #333;            position: absolute;            transform: translateY(-2px);
-
+        
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); }
+        .btn:active { transform: translateY(0); }
+        
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+        .btn-info { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            color: #333;
+            font-weight: 600;
         }
-
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input { opacity: 0; width: 0; height: 0; }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider { background-color: #10b981; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        
+        .status-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.7s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .summary-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        
+        .summary-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .summary-value {
+            font-size: 3rem;
             font-weight: bold;
-
-        .log-time {
-
-            color: #666;        }            top: 0;            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .summary-icon { font-size: 2rem; opacity: 0.3; }
+        
+        .summary-card.total .summary-value { color: #667eea; }
+        .summary-card.online .summary-value { color: #10b981; }
+        .summary-card.offline .summary-value { color: #ef4444; }
+        .summary-card.uptime .summary-value { color: #f59e0b; }
+        
+        .summary-card p { color: #999; font-size: 0.9rem; }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .service-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--status-color);
+            transition: width 0.3s ease;
+        }
+        
+        .service-card:hover::before { width: 8px; }
+        .service-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        
+        .service-card.online { --status-color: #10b981; }
+        .service-card.offline { --status-color: #ef4444; }
+        
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .service-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .service-icon {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
             font-size: 0.85rem;
-
-            margin-bottom: 5px;
-
+            font-weight: bold;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: pulse 2s infinite;
         }
-
-        .gateway-card {            left: 0;        }
-
-        .log-message {
-
-            color: #333;            grid-column: 1 / -1;
-
+        
+        .status-badge.online { background: #d1fae5; color: #065f46; }
+        .status-badge.offline { background: #fee2e2; color: #991b1b; animation: none; }
+        
+        .status-badge i { font-size: 0.7rem; }
+        
+        .service-details {
+            display: grid;
+            gap: 12px;
         }
-
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);            width: 100%;
-
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        
+        .detail-row:hover { background: rgba(102, 126, 234, 0.1); }
+        
+        .detail-label {
+            color: #666;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .detail-label i { color: #667eea; }
+        
+        .detail-value {
+            color: #333;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        
+        .url-link {
+            color: #667eea;
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.3s ease;
+        }
+        
+        .url-link:hover { color: #764ba2; text-decoration: underline; }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .last-update {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.95rem;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
         @media (max-width: 768px) {
-
-            .header h1 {            color: white;
-
-                font-size: 1.8rem;
-
-            }        }            height: 6px;        .stats {
-
-
-
-            .services-grid {
-
-                grid-template-columns: 1fr;
-
-            }        .gateway-card .service-icon {        }            display: grid;
-
-
-
-            .controls {            background: white;
-
-                flex-direction: column;
-
-                align-items: stretch;            color: #667eea;            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-
-            }
-
+            .header h1 { font-size: 1.8rem; }
+            .services-grid { grid-template-columns: 1fr; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .toggle-switch { margin-left: 0; justify-content: center; }
+            .status-summary { grid-template-columns: 1fr; }
         }
-
-            .toggle-switch {
-
-                margin-left: 0;        .service-status.online {            gap: 1.5rem;
-
-                justify-content: center;
-
-            }        .gateway-card .detail-row {
-
-        }
-
-    </style>            border-bottom-color: rgba(255,255,255,0.2);            background: linear-gradient(90deg, #4CAF50, #8BC34A);            margin-bottom: 3rem;
-
+    </style>
 </head>
-
-<body>        }
-
+<body>
     <div class="monitor-container">
-
-        <div class="header">        }        }
-
-            <h1>
-
-                <i class="fas fa-server"></i>        .gateway-card .detail-label,
-
-                TravelMap - Микросервистерді бақылау
-
-            </h1>        .gateway-card .detail-value {
-
-            <p>Барлық қызметтердің нақты уақыттағы мәртебесі мен денсаулық тексерісі</p>
-
-        </div>            color: white;
-
-
-
-        <div class="status-summary">        }        .service-status.offline {        .stat-card {
-
-            <div class="summary-card total">
-
-                <h3>Барлық сервистер</h3>
-
-                <div class="summary-value" id="totalServices">5</div>
-
-                <p>Жалпы қызметтер</p>        .overall-status {            background: linear-gradient(90deg, #F44336, #E91E63);            background: var(--dark-card);
-
-            </div>
-
-            <div class="summary-card online">            text-align: center;
-
-                <h3>Онлайн</h3>
-
-                <div class="summary-value" id="onlineServices">-</div>            padding: 20px;        }            padding: 1.5rem;
-
-                <p>Белсенді сервистер</p>
-
-            </div>            border-radius: 12px;
-
-            <div class="summary-card offline">
-
-                <h3>Офлайн</h3>            margin-top: 20px;            border-radius: 15px;
-
-                <div class="summary-value" id="offlineServices">-</div>
-
-                <p>Белсенді емес</p>            font-size: 1.2rem;
-
-            </div>
-
-            <div class="summary-card uptime">            font-weight: bold;        .service-header {            text-align: center;
-
-                <h3>Жұмыс уақыты</h3>
-
-                <div class="summary-value" id="systemUptime">-</div>        }
-
-                <p>Орташа</p>
-
-            </div>            display: flex;            border: 2px solid transparent;
-
+        <div class="header">
+            <h1><i class="fas fa-server"></i> TravelMap - Микросервистерді бақылау</h1>
+            <p>Барлық қызметтердің нақты уақыттағы мәртебесі | Әр 5 секунд сайын автожаңарту</p>
         </div>
-
-        .overall-status.healthy {
 
         <div class="controls">
-
-            <button class="btn btn-primary" onclick="loadHealthStatus()">            background: rgba(76, 175, 80, 0.2);            align-items: center;            transition: all 0.3s ease;
-
+            <button class="btn btn-primary" onclick="loadHealthStatus()">
                 <i class="fas fa-sync-alt"></i>
-
-                Жаңарту        }
-
+                Жаңарту
             </button>
-
-            <button class="btn btn-secondary" onclick="testAllServices()">            gap: 15px;        }
-
+            <button class="btn btn-success" onclick="testAllServices()">
                 <i class="fas fa-check-circle"></i>
-
-                Барлығын тексеру        .overall-status.degraded {
-
+                Барлығын тексеру
             </button>
-
-            <div class="toggle-switch">            background: rgba(244, 67, 54, 0.2);            margin-bottom: 20px;
-
+            <button class="btn btn-info" onclick="openGateway()">
+                <i class="fas fa-external-link-alt"></i>
+                Gateway ашу
+            </button>
+            <div class="toggle-switch">
                 <span>Авто-жаңарту:</span>
-
-                <label class="switch">        }
-
-                    <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
-
-                    <span class="slider"></span>        }        .stat-card:hover {
-
+                <label class="switch">
+                    <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()" checked>
+                    <span class="slider"></span>
                 </label>
-
-            </div>        .loading-spinner {
-
+            </div>
         </div>
 
-            display: none;            transform: translateY(-5px);
+        <div class="status-summary">
+            <div class="summary-card total">
+                <h3><i class="fas fa-server summary-icon"></i> Барлық сервистер</h3>
+                <div class="summary-value">5</div>
+                <p>Жүйедегі микросервистер</p>
+            </div>
+            <div class="summary-card online">
+                <h3><i class="fas fa-check-circle summary-icon"></i> Онлайн</h3>
+                <div class="summary-value" id="onlineServices">-</div>
+                <p>Белсенді сервистер</p>
+            </div>
+            <div class="summary-card offline">
+                <h3><i class="fas fa-times-circle summary-icon"></i> Офлайн</h3>
+                <div class="summary-value" id="offlineServices">-</div>
+                <p>Белсенді емес сервистер</p>
+            </div>
+            <div class="summary-card uptime">
+                <h3><i class="fas fa-clock summary-icon"></i> Жұмыс уақыты</h3>
+                <div class="summary-value" id="systemUptime">-</div>
+                <p>Орташа жұмыс уақыты</p>
+            </div>
+        </div>
 
         <div id="servicesContainer" class="services-grid">
-
-            <div class="loading">            position: fixed;
-
+            <div class="loading">
                 <div class="spinner"></div>
-
-                <p>Сервистерді жүктеу...</p>            top: 50%;        .service-icon {            border-color: var(--primary-color);
-
+                <p>Сервистер туралы деректерді жүктеу...</p>
             </div>
+        </div>
 
-        </div>            left: 50%;
-
-
-
-        <div class="last-update" id="lastUpdate"></div>            transform: translate(-50%, -50%);            width: 60px;        }
-
+        <div class="last-update" id="lastUpdate">Деректерді күту...</div>
     </div>
-
-            text-align: center;
 
     <script>
+        let autoRefreshInterval = null;
 
-        let autoRefreshInterval = null;            color: white;            height: 60px;
-
-
-
-        async function loadHealthStatus() {            font-size: 2rem;
-
+        async function loadHealthStatus() {
             try {
-
-                const response = await fetch('http://localhost:3000/api/health');            z-index: 1000;            border-radius: 12px;        .stat-icon {
-
+                const response = await fetch('http://localhost:3000/api/health');
                 const data = await response.json();
-
-                        }
-
                 displayServices(data);
-
-                updateSummary(data);            display: flex;            font-size: 2.5rem;
-
+                updateSummary(data);
                 updateLastUpdateTime();
-
-            } catch (error) {        .loading-spinner.active {
-
-                console.error('Қате:', error);
-
-                document.getElementById('servicesContainer').innerHTML = `            display: block;            align-items: center;            margin-bottom: 1rem;
-
+            } catch (error) {
+                console.error('Жүктеу қатесі:', error);
+                document.getElementById('servicesContainer').innerHTML = `
                     <div class="error-message" style="grid-column: 1/-1;">
-
-                        <i class="fas fa-exclamation-triangle"></i>        }
-
-                        <strong>Қате:</strong> API Gateway-ке қосылу мүмкін емес. 
-
-                        Backend іске қосылғанын тексеріңіз (npm run start:all).            justify-content: center;        }
-
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>API Gateway-ге қосылу қатесі!</strong><br>
+                            Backend іске қосылғанына көз жеткізіңіз: <code>npm run start:all</code>
+                        </div>
                     </div>
-
-                `;        @keyframes spin {
-
-            }
-
-        }            to { transform: rotate(360deg); }            font-size: 2rem;
-
-
-
-        function displayServices(data) {        }
-
-            const container = document.getElementById('servicesContainer');
-
-            const services = [            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);        .stat-value {
-
-                {
-
-                    name: 'API Gateway',        .spinner {
-
-                    icon: 'fa-network-wired',
-
-                    port: 3000,            animation: spin 1s linear infinite;            color: white;            font-size: 2rem;
-
-                    description: 'Басты API шлюзі',
-
-                    status: data.gateway        }
-
-                },
-
-                {        }            font-weight: bold;
-
-                    name: 'Places Service',
-
-                    icon: 'fa-map-marked-alt',        .error-message {
-
-                    port: 3001,
-
-                    description: 'Орындар мен жерлерді басқару',            background: rgba(244, 67, 54, 0.9);            margin-bottom: 0.5rem;
-
-                    status: data.services?.places
-
-                },            color: white;
-
-                {
-
-                    name: 'Weather Service',            padding: 30px;        .service-info h3 {        }
-
-                    icon: 'fa-cloud-sun',
-
-                    port: 3002,            border-radius: 16px;
-
-                    description: 'Ауа-райы деректері',
-
-                    status: data.services?.weather            text-align: center;            font-size: 1.5rem;
-
-                },
-
-                {            max-width: 600px;
-
-                    name: 'Map Service',
-
-                    icon: 'fa-map',            margin: 0 auto;            margin: 0;        .stat-label {
-
-                    port: 3003,
-
-                    description: 'Карталық қызметтер',        }
-
-                    status: data.services?.map
-
-                },            color: #333;            color: var(--gray-text);
-
-                {
-
-                    name: 'Chat Service',        .error-message h3 {
-
-                    icon: 'fa-comments',
-
-                    port: 3004,            margin-bottom: 15px;        }            font-size: 0.9rem;
-
-                    description: 'AI чат-боты',
-
-                    status: data.services?.chat            font-size: 1.8rem;
-
-                }
-
-            ];        }        }
-
-
-
-            container.innerHTML = services.map(service => {
-
-                const isOnline = service.status?.status === 'online';
-
-                const statusClass = isOnline ? 'online' : 'offline';        .error-message p {        .service-badge {
-
-                const statusText = isOnline ? 'Онлайн' : 'Офлайн';
-
-                            margin-bottom: 10px;
-
-                return `
-
-                    <div class="service-card ${statusClass}">            line-height: 1.6;            display: inline-block;        .services-grid {
-
-                        <div class="service-header">
-
-                            <div class="service-name">        }
-
-                                <i class="fas ${service.icon} service-icon"></i>
-
-                                ${service.name}            padding: 4px 12px;            display: grid;
-
-                            </div>
-
-                            <span class="status-badge ${statusClass}">${statusText}</span>        .error-message code {
-
-                        </div>
-
-                        <div class="service-details">            background: rgba(0,0,0,0.3);            border-radius: 20px;            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-
-                            <div class="detail-row">
-
-                                <span class="detail-label">Порт:</span>            padding: 10px 15px;
-
-                                <span class="detail-value">${service.port}</span>
-
-                            </div>            border-radius: 8px;            font-size: 0.85rem;            gap: 2rem;
-
-                            <div class="detail-row">
-
-                                <span class="detail-label">URL:</span>            display: inline-block;
-
-                                <a href="http://localhost:${service.port}" target="_blank" class="url-link detail-value">
-
-                                    localhost:${service.port}            margin-top: 10px;            font-weight: bold;        }
-
-                                </a>
-
-                            </div>        }
-
-                            <div class="detail-row">
-
-                                <span class="detail-label">Сипаттама:</span>            margin-top: 5px;
-
-                                <span class="detail-value">${service.description}</span>
-
-                            </div>        .last-update {
-
-                            ${service.status?.uptime ? `
-
-                                <div class="detail-row">            text-align: center;        }        .service-card {
-
-                                    <span class="detail-label">Жұмыс уақыты:</span>
-
-                                    <span class="detail-value">${formatUptime(service.status.uptime)}</span>            color: white;
-
-                                </div>
-
-                            ` : ''}            margin-top: 30px;            background: var(--dark-card);
-
-                            ${service.status?.timestamp ? `
-
-                                <div class="detail-row">            font-size: 1.1rem;
-
-                                    <span class="detail-label">Соңғы тексеру:</span>
-
-                                    <span class="detail-value">${new Date(service.status.timestamp).toLocaleTimeString('kk-KZ')}</span>        }        .service-badge.online {            border-radius: 20px;
-
-                                </div>
-
-                            ` : ''}
-
-                        </div>
-
-                        ${!isOnline && service.status?.error ? `        @media (max-width: 768px) {            background: #4CAF50;            padding: 2rem;
-
-                            <div class="error-message">
-
-                                <i class="fas fa-exclamation-circle"></i>            .monitor-header h1 {
-
-                                ${service.status.error}
-
-                            </div>                font-size: 2rem;            color: white;            border: 2px solid transparent;
-
-                        ` : ''}
-
-                    </div>            }
-
                 `;
-
-            }).join('');        }            transition: all 0.3s ease;
-
-        }
-
-            .services-grid {
-
-        function updateSummary(data) {
-
-            const services = [                grid-template-columns: 1fr;            position: relative;
-
-                data.gateway,
-
-                data.services?.places,            }
-
-                data.services?.weather,
-
-                data.services?.map,        .service-badge.offline {            overflow: hidden;
-
-                data.services?.chat
-
-            ];            .gateway-card {
-
-
-
-            const onlineCount = services.filter(s => s?.status === 'online').length;                grid-column: 1;            background: #F44336;        }
-
-            const offlineCount = services.filter(s => s?.status !== 'online').length;
-
-            }
-
-            document.getElementById('onlineServices').textContent = onlineCount;
-
-            document.getElementById('offlineServices').textContent = offlineCount;        }            color: white;
-
-
-
-            // Орташа uptime есептеу    </style>
-
-            const uptimes = services
-
-                .filter(s => s?.uptime)</head>        }        .service-card::before {
-
-                .map(s => s.uptime);
-
-            <body>
-
-            if (uptimes.length > 0) {
-
-                const avgUptime = uptimes.reduce((a, b) => a + b, 0) / uptimes.length;    <div class="monitor-container">            content: '';
-
-                document.getElementById('systemUptime').textContent = formatUptime(avgUptime);
-
-            } else {        <div class="monitor-header">
-
+                document.getElementById('onlineServices').textContent = '0';
+                document.getElementById('offlineServices').textContent = '5';
                 document.getElementById('systemUptime').textContent = 'N/A';
-
-            }            <h1><i class="fa-solid fa-chart-line"></i> Сервистер Мониторингі</h1>        .service-details {            position: absolute;
-
-        }
-
-            <p>TravelMap микросервистерінің нақты уақыт режимінде мониторингі</p>
-
-        function formatUptime(seconds) {
-
-            if (!seconds) return 'N/A';        </div>            margin-top: 20px;            top: 0;
-
-            
-
-            const days = Math.floor(seconds / 86400);
-
-            const hours = Math.floor((seconds % 86400) / 3600);
-
-            const minutes = Math.floor((seconds % 3600) / 60);        <div class="controls">        }            left: 0;
-
-            const secs = Math.floor(seconds % 60);
-
-            <button class="refresh-btn" onclick="loadHealthStatus()">
-
-            const parts = [];
-
-            if (days > 0) parts.push(`${days}к`);                <i class="fa-solid fa-rotate"></i>            width: 5px;
-
-            if (hours > 0) parts.push(`${hours}с`);
-
-            if (minutes > 0) parts.push(`${minutes}м`);                <span>Жаңарту</span>
-
-            if (secs > 0 || parts.length === 0) parts.push(`${secs}с`);
-
-            </button>        .detail-row {            height: 100%;
-
-            return parts.join(' ');
-
-        }
-
-
-
-        function updateLastUpdateTime() {            <label class="auto-refresh">            display: flex;            transition: all 0.3s ease;
-
-            const now = new Date();
-
-            const timeStr = now.toLocaleTimeString('kk-KZ');                <input type="checkbox" id="autoRefresh" checked onchange="toggleAutoRefresh()">
-
-            const dateStr = now.toLocaleDateString('kk-KZ');
-
-            document.getElementById('lastUpdate').textContent = `Соңғы жаңарту: ${dateStr} ${timeStr}`;                <span>Автоматты жаңарту (5 сек)</span>            justify-content: space-between;        }
-
-        }
-
-            </label>
-
-        function toggleAutoRefresh() {
-
-            const checkbox = document.getElementById('autoRefresh');        </div>            padding: 12px 0;
-
-            
-
-            if (checkbox.checked) {
-
-                autoRefreshInterval = setInterval(loadHealthStatus, 5000);
-
-                console.log('Авто-жаңарту қосылды (5 секунд сайын)');        <div class="loading-spinner" id="loadingSpinner">            border-bottom: 1px solid #f0f0f0;        .service-card.active::before {
-
-            } else {
-
-                if (autoRefreshInterval) {            <i class="fa-solid fa-spinner spinner"></i>
-
-                    clearInterval(autoRefreshInterval);
-
-                    autoRefreshInterval = null;            <p>Жүктелуде...</p>        }            background: var(--success-color);
-
-                }
-
-                console.log('Авто-жаңарту өшірілді');        </div>
-
             }
-
-        }        }
-
-
-
-        async function testAllServices() {        <div class="services-grid" id="servicesGrid">
-
-            const services = [
-
-                { name: 'API Gateway', url: 'http://localhost:3000/api/health' },            <!-- Сервистер динамикалық түрде қосылады -->        .detail-row:last-child {
-
-                { name: 'Places', url: 'http://localhost:3001/health' },
-
-                { name: 'Weather', url: 'http://localhost:3002/health' },        </div>
-
-                { name: 'Map', url: 'http://localhost:3003/health' },
-
-                { name: 'Chat', url: 'http://localhost:3004/health' }            border-bottom: none;        .service-card.inactive::before {
-
-            ];
-
-        <div class="last-update" id="lastUpdate"></div>
-
-            console.log('=== Барлық сервистерді тексеру ===');
-
-                </div>        }            background: var(--danger-color);
-
-            for (const service of services) {
-
-                try {
-
-                    const response = await fetch(service.url);
-
-                    const data = await response.json();    <script>        }
-
-                    console.log(`✅ ${service.name}: OK`, data);
-
-                } catch (error) {        let autoRefreshInterval = null;
-
-                    console.error(`❌ ${service.name}: ҚАТЕ`, error.message);
-
-                }        .detail-label {
-
-            }
-
-                    async function loadHealthStatus() {
-
-            console.log('=== Тексеру аяқталды ===');
-
-            loadHealthStatus();            const grid = document.getElementById('servicesGrid');            color: #666;        .service-card.error::before {
-
         }
-
-            const spinner = document.getElementById('loadingSpinner');
-
-        // Бетті жүктегенде деректерді алу
-
-        document.addEventListener('DOMContentLoaded', () => {                        font-weight: 600;            background: var(--warning-color);
-
-            loadHealthStatus();
-
-            // Әдепкі бойынша авто-жаңарту қосу            try {
-
-            document.getElementById('autoRefresh').checked = true;
-
-            toggleAutoRefresh();                spinner.classList.add('active');        }        }
-
-        });
-
-    </script>                
-
-</body>
-
-</html>                const response = await fetch('http://localhost:3000/api/health');
-
-
-                const data = await response.json();
-
-                        .detail-value {        .service-header {
-
-                displayServices(data);
-
-                            color: #333;            display: flex;
-
-                document.getElementById('lastUpdate').innerHTML = 
-
-                    `<i class="fa-solid fa-clock"></i> Соңғы жаңарту: ${new Date().toLocaleString('kk-KZ')}`;            font-weight: bold;            justify-content: space-between;
-
-                
-
-            } catch (error) {        }            align-items: center;
-
-                console.error('Мониторинг қатесі:', error);
-
-                grid.innerHTML = `            margin-bottom: 1.5rem;
-
-                    <div class="error-message">
-
-                        <i class="fa-solid fa-triangle-exclamation"></i>        .gateway-card {        }
-
-                        <h3>Қате орын алды</h3>
-
-                        <p>API Gateway қолжетімді емес. Серверді іске қосыңыз:</p>            grid-column: 1 / -1;
-
-                        <code>cd backend && npm run start:all</code>
-
-                    </div>            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);        .service-title {
-
-                `;
-
-            } finally {            color: white;            display: flex;
-
-                spinner.classList.remove('active');
-
-            }        }            align-items: center;
-
-        }
-
-            gap: 1rem;
 
         function displayServices(data) {
-
-            const grid = document.getElementById('servicesGrid');        .gateway-card .service-icon {        }
-
-            let html = '';
-
-                        background: white;
-
-            html += createGatewayCard(data.gateway, data.overall);
-
-                        color: #667eea;        .service-icon {
-
-            const serviceIcons = {
-
-                places: '📍',        }            font-size: 2rem;
-
-                weather: '🌤️',
-
-                map: '🗺️',        }
-
-                chat: '💬'
-
-            };        .gateway-card .detail-row {
-
-            
-
-            const serviceNames = {            border-bottom-color: rgba(255,255,255,0.2);        .service-name {
-
-                places: 'Орындар сервисі',
-
-                weather: 'Ауа райы сервисі',        }            font-size: 1.5rem;
-
-                map: 'Карта сервисі',
-
-                chat: 'Чатбот сервисі'            font-weight: bold;
-
-            };
-
-                    .gateway-card .detail-label,        }
-
-            for (const [name, info] of Object.entries(data.services)) {
-
-                html += createServiceCard(name, serviceNames[name], serviceIcons[name], info);        .gateway-card .detail-value {
-
-            }
-
-                        color: white;        .status-badge {
-
-            grid.innerHTML = html;
-
-        }        }            padding: 0.5rem 1rem;
-
-
-
-        function createGatewayCard(gateway, overall) {            border-radius: 20px;
-
-            return `
-
-                <div class="service-card gateway-card">        .overall-status {            font-size: 0.9rem;
-
-                    <div class="service-status ${gateway.status}"></div>
-
-                    <div class="service-header">            text-align: center;            font-weight: bold;
-
-                        <div class="service-icon">
-
-                            <i class="fa-solid fa-server"></i>            padding: 20px;            display: flex;
-
-                        </div>
-
-                        <div class="service-info">            border-radius: 12px;            align-items: center;
-
-                            <h3>API Gateway</h3>
-
-                            <span class="service-badge ${gateway.status}">${gateway.status.toUpperCase()}</span>            margin-top: 20px;            gap: 0.5rem;
-
-                        </div>
-
-                    </div>            font-size: 1.2rem;        }
-
-                    <div class="service-details">
-
-                        <div class="detail-row">            font-weight: bold;
-
-                            <span class="detail-label">Порт</span>
-
-                            <span class="detail-value">${gateway.port}</span>        }        .status-badge.active {
-
-                        </div>
-
-                        <div class="detail-row">            background: rgba(34, 197, 94, 0.2);
-
-                            <span class="detail-label">Uptime</span>
-
-                            <span class="detail-value">${formatUptime(gateway.uptime)}</span>        .overall-status.healthy {            color: var(--success-color);
-
-                        </div>
-
-                        <div class="detail-row">            background: rgba(76, 175, 80, 0.2);        }
-
-                            <span class="detail-label">Уақыт</span>
-
-                            <span class="detail-value">${new Date(gateway.timestamp).toLocaleTimeString('kk-KZ')}</span>        }
-
-                        </div>
-
-                    </div>        .status-badge.inactive {
-
-                    <div class="overall-status ${overall}">
-
-                        <i class="fa-solid fa-${overall === 'healthy' ? 'check-circle' : 'exclamation-triangle'}"></i>        .overall-status.degraded {            background: rgba(239, 68, 68, 0.2);
-
-                        ${overall === 'healthy' ? 'Барлығы жұмыс істеп тұр' : 'Кейбір сервистер қолжетімді емес'}
-
-                    </div>            background: rgba(244, 67, 54, 0.2);            color: var(--danger-color);
-
-                </div>
-
-            `;        }        }
-
-        }
-
-
-
-        function createServiceCard(name, title, icon, info) {
-
-            const isOnline = info.status === 'online';        .loading-spinner {        .status-badge.error {
-
-            
-
-            return `            display: none;            background: rgba(245, 158, 11, 0.2);
-
-                <div class="service-card">
-
-                    <div class="service-status ${info.status}"></div>            position: fixed;            color: var(--warning-color);
-
-                    <div class="service-header">
-
-                        <div class="service-icon">${icon}</div>            top: 50%;        }
-
-                        <div class="service-info">
-
-                            <h3>${title}</h3>            left: 50%;
-
-                            <span class="service-badge ${info.status}">${info.status.toUpperCase()}</span>
-
-                        </div>            transform: translate(-50%, -50%);        .service-info {
-
-                    </div>
-
-                    <div class="service-details">            text-align: center;            margin-bottom: 1.5rem;
-
-                        ${isOnline ? `
-
-                            <div class="detail-row">            color: white;        }
-
-                                <span class="detail-label">Порт</span>
-
-                                <span class="detail-value">${info.port}</span>            font-size: 2rem;
-
+            const container = document.getElementById('servicesContainer');
+            const services = [
+                { name: 'API Gateway', icon: 'fa-network-wired', port: 3000, desc: 'Орталық API шлюзі', status: data.gateway },
+                { name: 'Places Service', icon: 'fa-map-marked-alt', port: 3001, desc: 'Орындарды басқару', status: data.services?.places },
+                { name: 'Weather Service', icon: 'fa-cloud-sun', port: 3002, desc: 'Ауа-райы деректері', status: data.services?.weather },
+                { name: 'Map Service', icon: 'fa-map', port: 3003, desc: 'Карта қызметтері', status: data.services?.map },
+                { name: 'Chat Service', icon: 'fa-comments', port: 3004, desc: 'AI чат-боты', status: data.services?.chat }
+            ];
+
+            container.innerHTML = services.map(s => {
+                const online = s.status?.status === 'online' || s.status?.status === 'healthy';
+                const statusClass = online ? 'online' : 'offline';
+                const statusText = online ? 'Онлайн' : 'Офлайн';
+                const statusIcon = online ? 'fa-check-circle' : 'fa-times-circle';
+                
+                return `
+                    <div class="service-card ${statusClass}" style="animation-delay: ${services.indexOf(s) * 0.1}s">
+                        <div class="service-header">
+                            <div class="service-name">
+                                <i class="fas ${s.icon} service-icon"></i>
+                                ${s.name}
                             </div>
-
-                            <div class="detail-row">        }        .info-row {
-
-                                <span class="detail-label">Uptime</span>
-
-                                <span class="detail-value">${formatUptime(info.uptime)}</span>            display: flex;
-
-                            </div>
-
-                            <div class="detail-row">        .loading-spinner.active {            justify-content: space-between;
-
-                                <span class="detail-label">Сервис</span>
-
-                                <span class="detail-value">${info.service}</span>            display: block;            padding: 0.8rem 0;
-
-                            </div>
-
-                            ${info.api ? `        }            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-
+                            <span class="status-badge ${statusClass}">
+                                <i class="fas ${statusIcon}"></i>
+                                ${statusText}
+                            </span>
+                        </div>
+                        <div class="service-details">
                             <div class="detail-row">
-
-                                <span class="detail-label">API</span>        }
-
-                                <span class="detail-value">${info.api}</span>
-
-                            </div>        @keyframes spin {
-
+                                <span class="detail-label">
+                                    <i class="fas fa-plug"></i>
+                                    Порт:
+                                </span>
+                                <span class="detail-value">${s.port}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">
+                                    <i class="fas fa-link"></i>
+                                    Сілтеме:
+                                </span>
+                                <a href="http://localhost:${s.port}" target="_blank" class="url-link detail-value">
+                                    localhost:${s.port}
+                                </a>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">
+                                    <i class="fas fa-info-circle"></i>
+                                    Сипаттама:
+                                </span>
+                                <span class="detail-value">${s.desc}</span>
+                            </div>
+                            ${s.status?.uptime ? `
+                                <div class="detail-row">
+                                    <span class="detail-label">
+                                        <i class="fas fa-clock"></i>
+                                        Жұмыс уақыты:
+                                    </span>
+                                    <span class="detail-value">${formatUptime(s.status.uptime)}</span>
+                                </div>
                             ` : ''}
-
-                        ` : `            to { transform: rotate(360deg); }        .info-label {
-
-                            <div class="detail-row">
-
-                                <span class="detail-label">Қате</span>        }            color: var(--gray-text);
-
-                                <span class="detail-value" style="color: #F44336;">${info.error}</span>
-
-                            </div>        }
-
-                            <div class="detail-row">
-
-                                <span class="detail-label">URL</span>        .spinner {
-
-                                <span class="detail-value">${info.url}</span>
-
-                            </div>            animation: spin 1s linear infinite;        .info-value {
-
-                        `}
-
-                    </div>        }            font-weight: bold;
-
-                </div>
-
-            `;        }
-
-        }
-
-        .error-message {
-
-        function formatUptime(seconds) {
-
-            const hours = Math.floor(seconds / 3600);            background: rgba(244, 67, 54, 0.9);        .service-actions {
-
-            const minutes = Math.floor((seconds % 3600) / 60);
-
-            const secs = Math.floor(seconds % 60);            color: white;            display: flex;
-
-            
-
-            if (hours > 0) {            padding: 20px;            gap: 1rem;
-
-                return `${hours}с ${minutes}м ${secs}с`;
-
-            } else if (minutes > 0) {            border-radius: 12px;        }
-
-                return `${minutes}м ${secs}с`;
-
-            } else {            margin: 20px auto;
-
-                return `${secs}с`;
-
-            }            max-width: 600px;        .action-btn {
-
-        }
-
-            text-align: center;            flex: 1;
-
-        function toggleAutoRefresh() {
-
-            const checkbox = document.getElementById('autoRefresh');        }            padding: 0.8rem;
-
-            
-
-            if (checkbox.checked) {            border: none;
-
-                autoRefreshInterval = setInterval(loadHealthStatus, 5000);
-
-                console.log('✅ Автоматты жаңарту қосылды');        .last-update {            border-radius: 10px;
-
-            } else {
-
-                clearInterval(autoRefreshInterval);            text-align: center;            cursor: pointer;
-
-                autoRefreshInterval = null;
-
-                console.log('❌ Автоматты жаңарту өшірілді');            color: white;            font-size: 0.9rem;
-
-            }
-
-        }            margin-top: 30px;            display: flex;
-
-
-
-        document.addEventListener('DOMContentLoaded', () => {            font-size: 1rem;            align-items: center;
-
-            loadHealthStatus();
-
-            toggleAutoRefresh();        }            justify-content: center;
-
-        });
-
-    </script>    </style>            gap: 0.5rem;
-
-</body>
-
-</html></head>            transition: all 0.3s ease;
-
-
-<body>            color: white;
-
-    <div class="monitor-container">        }
-
-        <div class="monitor-header">
-
-            <h1><i class="fa-solid fa-chart-line"></i> Сервистер Мониторингі</h1>        .action-btn.start {
-
-            <p>TravelMap микросервистерінің нақты уақыт режимінде мониторингі</p>            background: var(--success-color);
-
-        </div>        }
-
-
-
-        <button class="refresh-btn" onclick="loadHealthStatus()">        .action-btn.stop {
-
-            <i class="fa-solid fa-rotate"></i> Жаңарту            background: var(--danger-color);
-
-        </button>        }
-
-
-
-        <div class="auto-refresh">        .action-btn.restart {
-
-            <label>            background: var(--primary-color);
-
-                <input type="checkbox" id="autoRefresh" checked onchange="toggleAutoRefresh()">        }
-
-                Автоматты жаңарту (5 секунд сайын)
-
-            </label>        .action-btn.details {
-
-        </div>            background: var(--dark-bg);
-
-        }
-
-        <div class="loading-spinner" id="loadingSpinner">
-
-            <i class="fa-solid fa-spinner spinner"></i>        .action-btn:hover {
-
-            <p>Жүктелуде...</p>            transform: translateY(-2px);
-
-        </div>        }
-
-
-
-        <div class="services-grid" id="servicesGrid">        .action-btn:disabled {
-
-            <!-- Сервистер динамикалық түрде қосылады -->            opacity: 0.5;
-
-        </div>            cursor: not-allowed;
-
-            transform: none;
-
-        <div class="last-update" id="lastUpdate"></div>        }
-
-    </div>
-
-        .log-section {
-
-    <script>            margin-top: 2rem;
-
-        let autoRefreshInterval = null;            background: rgba(0, 0, 0, 0.3);
-
-            border-radius: 10px;
-
-        async function loadHealthStatus() {            padding: 1rem;
-
-            const grid = document.getElementById('servicesGrid');            max-height: 200px;
-
-            const spinner = document.getElementById('loadingSpinner');            overflow-y: auto;
-
-                    }
-
-            try {
-
-                spinner.classList.add('active');        .log-title {
-
-                            font-weight: bold;
-
-                const response = await fetch('http://localhost:3000/api/health');            margin-bottom: 0.5rem;
-
-                const data = await response.json();            color: var(--primary-color);
-
-                        }
-
-                displayServices(data);
-
-                        .log-entry {
-
-                document.getElementById('lastUpdate').innerHTML =             font-size: 0.85rem;
-
-                    `<i class="fa-solid fa-clock"></i> Соңғы жаңарту: ${new Date().toLocaleString('kk-KZ')}`;            padding: 0.3rem 0;
-
-                            color: var(--gray-text);
-
-            } catch (error) {            font-family: 'Courier New', monospace;
-
-                console.error('Мониторинг қатесі:', error);        }
-
-                grid.innerHTML = `
-
-                    <div class="error-message">        .log-entry.error {
-
-                        <i class="fa-solid fa-triangle-exclamation"></i>            color: var(--danger-color);
-
-                        <h3>Қате орын алды</h3>        }
-
-                        <p>API Gateway қолжетімді емес. Серверді іске қосыңыз.</p>
-
-                        <p><code>cd backend && npm run start:gateway</code></p>        .log-entry.success {
-
-                    </div>            color: var(--success-color);
-
-                `;        }
-
-            } finally {
-
-                spinner.classList.remove('active');        .pulse {
-
-            }            animation: pulse 2s infinite;
-
-        }        }
-
-
-
-        function displayServices(data) {        @keyframes pulse {
-
-            const grid = document.getElementById('servicesGrid');            0%, 100% {
-
-            let html = '';                opacity: 1;
-
-                        }
-
-            html += createGatewayCard(data.gateway, data.overall);            50% {
-
-                            opacity: 0.5;
-
-            const serviceIcons = {            }
-
-                places: '📍',        }
-
-                weather: '🌤️',
-
-                map: '🗺️',        .loading {
-
-                chat: '💬'            text-align: center;
-
-            };            padding: 3rem;
-
-                        font-size: 1.5rem;
-
-            const serviceNames = {            color: var(--gray-text);
-
-                places: 'Орындар сервисі',        }
-
-                weather: 'Ауа райы сервисі',
-
-                map: 'Карта сервисі',        @media (max-width: 768px) {
-
-                chat: 'Чатбот сервисі'            body {
-
-            };                padding: 1rem;
-
-                        }
-
-            for (const [name, info] of Object.entries(data.services)) {
-
-                html += createServiceCard(name, serviceNames[name], serviceIcons[name], info);            h1 {
-
-            }                font-size: 2rem;
-
-                        }
-
-            grid.innerHTML = html;
-
-        }            .services-grid {
-
-                grid-template-columns: 1fr;
-
-        function createGatewayCard(gateway, overall) {            }
-
-            return `
-
-                <div class="service-card gateway-card">            .controls {
-
-                    <div class="service-status ${gateway.status}"></div>                flex-direction: column;
-
-                    <div class="service-header">            }
-
-                        <div class="service-icon">
-
-                            <i class="fa-solid fa-server"></i>            .control-btn {
-
-                        </div>                width: 100%;
-
-                        <div class="service-info">                justify-content: center;
-
-                            <h3>API Gateway</h3>            }
-
-                            <span class="service-badge ${gateway.status}">${gateway.status.toUpperCase()}</span>        }
-
-                        </div>    </style>
-
-                    </div></head>
-
-                    <div class="service-details"><body>
-
-                        <div class="detail-row">    <div class="container">
-
-                            <span class="detail-label">Порт</span>        <header>
-
-                            <span class="detail-value">${gateway.port}</span>            <h1>
-
-                        </div>                <i class="fa-solid fa-chart-line"></i>
-
-                        <div class="detail-row">                Микросервистерді бақылау
-
-                            <span class="detail-label">Uptime</span>            </h1>
-
-                            <span class="detail-value">${formatUptime(gateway.uptime)}</span>            <p class="subtitle">trАvelMap жүйесінің басқару панелі</p>
-
-                        </div>        </header>
-
-                        <div class="detail-row">
-
-                            <span class="detail-label">Уақыт</span>        <div class="controls">
-
-                            <span class="detail-value">${new Date(gateway.timestamp).toLocaleTimeString('kk-KZ')}</span>            <button class="control-btn start-all" onclick="startAllServices()">
-
-                        </div>                <i class="fa-solid fa-play"></i>
-
-                    </div>                Барлығын іске қосу
-
-                    <div class="overall-status ${overall}">            </button>
-
-                        <i class="fa-solid fa-${overall === 'healthy' ? 'check-circle' : 'exclamation-triangle'}"></i>            <button class="control-btn stop-all" onclick="stopAllServices()">
-
-                        ${overall === 'healthy' ? 'Барлығы жұмыс істеп тұр' : 'Кейбір сервистер қолжетімді емес'}                <i class="fa-solid fa-stop"></i>
-
-                    </div>                Барлығын тоқтату
-
-                </div>            </button>
-
-            `;            <button class="control-btn refresh" onclick="refreshMonitoring()">
-
-        }                <i class="fa-solid fa-rotate"></i>
-
-                Жаңарту
-
-        function createServiceCard(name, title, icon, info) {            </button>
-
-            const isOnline = info.status === 'online';        </div>
-
-            
-
-            return `        <div class="stats">
-
-                <div class="service-card">            <div class="stat-card">
-
-                    <div class="service-status ${info.status}"></div>                <div class="stat-icon" style="color: var(--success-color);">
-
-                    <div class="service-header">                    <i class="fa-solid fa-circle-check"></i>
-
-                        <div class="service-icon">${icon}</div>                </div>
-
-                        <div class="service-info">                <div class="stat-value" id="active-count">0</div>
-
-                            <h3>${title}</h3>                <div class="stat-label">Белсенді сервистер</div>
-
-                            <span class="service-badge ${info.status}">${info.status.toUpperCase()}</span>            </div>
-
+                            ${s.status?.timestamp ? `
+                                <div class="detail-row">
+                                    <span class="detail-label">
+                                        <i class="fas fa-history"></i>
+                                        Тексеру:
+                                    </span>
+                                    <span class="detail-value">${new Date(s.status.timestamp).toLocaleTimeString('ru-RU')}</span>
+                                </div>
+                            ` : ''}
                         </div>
+                        ${!online && s.status?.error ? `
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>${s.status.error}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
 
-                    </div>            <div class="stat-card">
-
-                    <div class="service-details">                <div class="stat-icon" style="color: var(--danger-color);">
-
-                        ${isOnline ? `                    <i class="fa-solid fa-circle-xmark"></i>
-
-                            <div class="detail-row">                </div>
-
-                                <span class="detail-label">Порт</span>                <div class="stat-value" id="inactive-count">0</div>
-
-                                <span class="detail-value">${info.port}</span>                <div class="stat-label">Тоқтатылғандар</div>
-
-                            </div>            </div>
-
-                            <div class="detail-row">
-
-                                <span class="detail-label">Uptime</span>            <div class="stat-card">
-
-                                <span class="detail-value">${formatUptime(info.uptime)}</span>                <div class="stat-icon" style="color: var(--warning-color);">
-
-                            </div>                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                            <div class="detail-row">                </div>
-
-                                <span class="detail-label">Сервис</span>                <div class="stat-value" id="error-count">0</div>
-
-                                <span class="detail-value">${info.service}</span>                <div class="stat-label">Қателермен</div>
-
-                            </div>            </div>
-
-                            ${info.api ? `
-
-                            <div class="detail-row">            <div class="stat-card">
-
-                                <span class="detail-label">API</span>                <div class="stat-icon" style="color: var(--primary-color);">
-
-                                <span class="detail-value">${info.api}</span>                    <i class="fa-solid fa-clock"></i>
-
-                            </div>                </div>
-
-                            ` : ''}                <div class="stat-value" id="uptime">0s</div>
-
-                        ` : `                <div class="stat-label">Жалпы жұмыс уақыты</div>
-
-                            <div class="detail-row">            </div>
-
-                                <span class="detail-label">Қате</span>        </div>
-
-                                <span class="detail-value" style="color: #F44336;">${info.error}</span>
-
-                            </div>        <div id="services-container" class="services-grid">
-
-                            <div class="detail-row">            <div class="loading">
-
-                                <span class="detail-label">URL</span>                <i class="fa-solid fa-spinner fa-spin"></i>
-
-                                <span class="detail-value">${info.url}</span>                Бақылау деректерін жүктеу...
-
-                            </div>            </div>
-
-                        `}        </div>
-
-                    </div>    </div>
-
-                </div>
-
-            `;    <script src="js/monitoringService.js"></script>
-
-        }</body>
-
-</html>
+        function updateSummary(data) {
+            const services = [data.gateway, data.services?.places, data.services?.weather, data.services?.map, data.services?.chat];
+            const onlineCount = services.filter(s => s?.status === 'online' || s?.status === 'healthy').length;
+            const offlineCount = services.filter(s => s?.status !== 'online' && s?.status !== 'healthy').length;
+            
+            document.getElementById('onlineServices').textContent = onlineCount;
+            document.getElementById('offlineServices').textContent = offlineCount;
+            
+            const uptimes = services.filter(s => s?.uptime).map(s => s.uptime);
+            if (uptimes.length > 0) {
+                const avgUptime = uptimes.reduce((a, b) => a + b, 0) / uptimes.length;
+                document.getElementById('systemUptime').textContent = formatUptime(avgUptime);
+            } else {
+                document.getElementById('systemUptime').textContent = 'N/A';
+            }
+        }
 
         function formatUptime(seconds) {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = Math.floor(seconds % 60);
-            
-            if (hours > 0) {
-                return `${hours}с ${minutes}м ${secs}с`;
-            } else if (minutes > 0) {
-                return `${minutes}м ${secs}с`;
-            } else {
-                return `${secs}с`;
-            }
+            if (!seconds) return 'N/A';
+            const d = Math.floor(seconds / 86400);
+            const h = Math.floor((seconds % 86400) / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            const parts = [];
+            if (d > 0) parts.push(`${d}д`);
+            if (h > 0) parts.push(`${h}ч`);
+            if (m > 0) parts.push(`${m}м`);
+            if (s > 0 || parts.length === 0) parts.push(`${s}с`);
+            return parts.join(' ');
+        }
+
+        function updateLastUpdateTime() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                `⏰ Соңғы жаңарту: ${now.toLocaleDateString('kk-KZ')} ${now.toLocaleTimeString('kk-KZ')}`;
         }
 
         function toggleAutoRefresh() {
             const checkbox = document.getElementById('autoRefresh');
-            
             if (checkbox.checked) {
                 autoRefreshInterval = setInterval(loadHealthStatus, 5000);
+                console.log('✅ Авто-жаңарту қосылды (әр 5 секунд сайын)');
             } else {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+                console.log('❌ Авто-жаңарту өшірілді');
             }
+        }
+
+        async function testAllServices() {
+            const services = [
+                { name: 'API Gateway', url: 'http://localhost:3000/api/health' },
+                { name: 'Places Service', url: 'http://localhost:3001/health' },
+                { name: 'Weather Service', url: 'http://localhost:3002/health' },
+                { name: 'Map Service', url: 'http://localhost:3003/health' },
+                { name: 'Chat Service', url: 'http://localhost:3004/health' }
+            ];
+            
+            console.log('🔍 === БАРЛЫҚ СЕРВИСТЕРДІ ТЕКСЕРУ ===');
+            for (const service of services) {
+                try {
+                    const start = Date.now();
+                    const response = await fetch(service.url);
+                    const data = await response.json();
+                    const time = Date.now() - start;
+                    console.log(`✅ ${service.name}: OK (${time}ms)`, data);
+                } catch (error) {
+                    console.error(`❌ ${service.name}: ҚАТЕ -`, error.message);
+                }
+            }
+            console.log('🏁 === ТЕКСЕРУ АЯҚТАЛДЫ ===');
+            loadHealthStatus();
+        }
+
+        function openGateway() {
+            window.open('http://localhost:3000/api/health', '_blank');
         }
 
         document.addEventListener('DOMContentLoaded', () => {

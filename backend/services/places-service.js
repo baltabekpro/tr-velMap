@@ -24,10 +24,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Роуты
-app.use('/', placesRouter);
-
-// Health check
+// Health check - ДОЛЖЕН БЫТЬ ПЕРЕД РОУТАМИ
 app.get('/health', (req, res) => {
     res.json({
         service: 'places',
@@ -37,6 +34,9 @@ app.get('/health', (req, res) => {
         uptime: process.uptime()
     });
 });
+
+// Роуты
+app.use('/', placesRouter);
 
 // Запуск сервера
 app.listen(PORT, () => {

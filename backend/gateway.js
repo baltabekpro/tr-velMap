@@ -107,8 +107,8 @@ app.get('/api/health', async (req, res) => {
         try {
             const response = await axios.get(`${url}/health`, { timeout: 2000 });
             services[name] = {
-                status: 'online',
-                ...response.data
+                ...response.data,
+                status: response.data.status || 'online'
             };
         } catch (error) {
             services[name] = {
@@ -119,7 +119,7 @@ app.get('/api/health', async (req, res) => {
         }
     }
     
-    const allHealthy = Object.values(services).every(s => s.status === 'online');
+    const allHealthy = Object.values(services).every(s => s.status === 'online' || s.status === 'healthy');
     
     res.json({
         gateway: {
