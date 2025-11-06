@@ -160,7 +160,7 @@ VALUES (
     1,
     'admin',
     'admin@travelmap.kz',
-    '$2a$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa', -- bcrypt hash для "admin123"
+    '$2a$10$IexaHuYMGX4VCuE2cP2B5uHjthnt5QXOCk64NU5/hUvIlyXzJst1K', -- bcrypt hash для "admin123"
     'Әкімші',
     'admin',
     'active',

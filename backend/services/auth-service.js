@@ -104,7 +104,7 @@ app.get('/health', (req, res) => {
 });
 
 // Регистрация
-app.post('/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     const { username, email, password, full_name, phone, language = 'kk' } = req.body;
 
     // Валидация
@@ -186,10 +186,12 @@ app.post('/register', async (req, res) => {
 });
 
 // Авторизация
-app.post('/login', (req, res) => {
-    const { login, password } = req.body;
+app.post('/api/auth/login', (req, res) => {
+    // Принимаем и 'login', и 'username' для совместимости
+    const { login, username, password } = req.body;
+    const loginValue = login || username;
 
-    if (!login || !password) {
+    if (!loginValue || !password) {
         return res.status(400).json({ error: 'Email/логин және құпия сөз қажет' });
     }
 
@@ -199,7 +201,7 @@ app.post('/login', (req, res) => {
         WHERE username = ? OR email = ?
     `;
 
-    db.get(sql, [login, login], async (err, user) => {
+    db.get(sql, [loginValue, loginValue], async (err, user) => {
         if (err) {
             console.error('Database қатесі:', err);
             return res.status(500).json({ error: 'Қате орын алды' });
@@ -241,7 +243,7 @@ app.post('/login', (req, res) => {
 });
 
 // Проверка токена
-app.post('/verify', authenticateToken, (req, res) => {
+app.post('/api/auth/verify', authenticateToken, (req, res) => {
     db.get('SELECT id, username, email, full_name, role, avatar_url, language FROM users WHERE id = ?', [req.user.id], (err, user) => {
         if (err || !user) {
             return res.status(404).json({ error: 'Пайдаланушы табылмады' });
@@ -265,7 +267,7 @@ app.post('/verify', authenticateToken, (req, res) => {
 // ============= PROTECTED ROUTES =============
 
 // Получить профиль текущего пользователя
-app.get('/profile', authenticateToken, (req, res) => {
+app.get('/api/auth/profile', authenticateToken, (req, res) => {
     const sql = `
         SELECT u.*, s.*, p.*
         FROM users u
@@ -292,7 +294,7 @@ app.get('/profile', authenticateToken, (req, res) => {
 });
 
 // Обновить профиль
-app.put('/profile', authenticateToken, (req, res) => {
+app.put('/api/auth/profile', authenticateToken, (req, res) => {
     const { full_name, phone, birth_date, gender, bio, country, city, language, avatar_url } = req.body;
 
     const sql = `
@@ -321,7 +323,7 @@ app.put('/profile', authenticateToken, (req, res) => {
 });
 
 // Изменить пароль
-app.put('/change-password', authenticateToken, async (req, res) => {
+app.put('/api/auth/change-password', authenticateToken, async (req, res) => {
     const { old_password, new_password } = req.body;
 
     if (!old_password || !new_password) {
@@ -355,7 +357,7 @@ app.put('/change-password', authenticateToken, async (req, res) => {
 });
 
 // Обновить настройки приватности
-app.put('/privacy-settings', authenticateToken, (req, res) => {
+app.put('/api/auth/privacy-settings', authenticateToken, (req, res) => {
     const {
         profile_public,
         show_email,
@@ -391,7 +393,7 @@ app.put('/privacy-settings', authenticateToken, (req, res) => {
 // ============= ADMIN ROUTES =============
 
 // Получить всех пользователей (только для админа)
-app.get('/admin/users', authenticateToken, requireAdmin, (req, res) => {
+app.get('/api/auth/admin/users', authenticateToken, requireAdmin, (req, res) => {
     const { page = 1, limit = 20, search = '', role = '', status = '' } = req.query;
     const offset = (page - 1) * limit;
 
@@ -446,7 +448,7 @@ app.get('/admin/users', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Изменить роль пользователя
-app.put('/admin/users/:userId/role', authenticateToken, requireAdmin, (req, res) => {
+app.put('/api/auth/admin/users/:userId/role', authenticateToken, requireAdmin, (req, res) => {
     const { userId } = req.params;
     const { role } = req.body;
 
@@ -471,7 +473,7 @@ app.put('/admin/users/:userId/role', authenticateToken, requireAdmin, (req, res)
 });
 
 // Заблокировать/разблокировать пользователя
-app.put('/admin/users/:userId/status', authenticateToken, requireAdmin, (req, res) => {
+app.put('/api/auth/admin/users/:userId/status', authenticateToken, requireAdmin, (req, res) => {
     const { userId } = req.params;
     const { status } = req.body;
 
@@ -496,7 +498,7 @@ app.put('/admin/users/:userId/status', authenticateToken, requireAdmin, (req, re
 });
 
 // Удалить пользователя
-app.delete('/admin/users/:userId', authenticateToken, requireAdmin, (req, res) => {
+app.delete('/api/auth/admin/users/:userId', authenticateToken, requireAdmin, (req, res) => {
     const { userId } = req.params;
 
     if (userId == req.user.id) {
@@ -519,7 +521,7 @@ app.delete('/admin/users/:userId', authenticateToken, requireAdmin, (req, res) =
 });
 
 // Получить статистику системы
-app.get('/admin/stats', authenticateToken, requireAdmin, (req, res) => {
+app.get('/api/auth/admin/stats', authenticateToken, requireAdmin, (req, res) => {
     const queries = {
         totalUsers: 'SELECT COUNT(*) as count FROM users',
         activeUsers: "SELECT COUNT(*) as count FROM users WHERE status = 'active'",
@@ -548,7 +550,7 @@ app.get('/admin/stats', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Получить логи администраторов
-app.get('/admin/logs', authenticateToken, requireAdmin, (req, res) => {
+app.get('/api/auth/admin/logs', authenticateToken, requireAdmin, (req, res) => {
     const { page = 1, limit = 50 } = req.query;
     const offset = (page - 1) * limit;
 

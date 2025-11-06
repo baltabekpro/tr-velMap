@@ -551,60 +551,70 @@
         // Load user profile
         async function loadProfile() {
             const token = localStorage.getItem('token');
+            console.log('🔐 loadProfile: token exists:', !!token);
+            
             if (!token) {
+                console.log('❌ No token, redirecting to login');
                 window.location.href = 'login.html';
                 return;
             }
 
             try {
+                console.log('📡 Fetching profile from:', `${API_URL}/api/auth/profile`);
                 const response = await fetch(`${API_URL}/api/auth/profile`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
+                console.log('📥 Response status:', response.status, response.statusText);
+
                 if (!response.ok) {
                     throw new Error('Unauthorized');
                 }
 
                 const data = await response.json();
-                currentUser = data.user;
+                console.log('✅ Profile data received:', data);
+                
+                // API returns "profile" not "user"
+                const profile = data.profile || data.user || data;
+                currentUser = profile;
+                console.log('👤 Current user set:', currentUser);
 
                 // Update UI
-                document.getElementById('user-name').textContent = data.user.full_name || data.user.username;
-                document.getElementById('user-username').textContent = `@${data.user.username}`;
-                document.getElementById('avatar').textContent = data.user.full_name ? data.user.full_name[0].toUpperCase() : '👤';
+                document.getElementById('user-name').textContent = profile.full_name || profile.username;
+                document.getElementById('user-username').textContent = `@${profile.username}`;
+                document.getElementById('avatar').textContent = profile.full_name ? profile.full_name[0].toUpperCase() : '👤';
 
-                // Stats
-                document.getElementById('stat-visits').textContent = data.stats?.total_visits || 0;
-                document.getElementById('stat-reviews').textContent = data.stats?.total_reviews || 0;
-                document.getElementById('stat-favorites').textContent = data.stats?.total_favorites || 0;
-                document.getElementById('stat-achievements').textContent = data.stats?.total_achievements || 0;
+                // Stats - profile includes stats
+                document.getElementById('stat-visits').textContent = profile.total_visits || 0;
+                document.getElementById('stat-reviews').textContent = profile.total_reviews || 0;
+                document.getElementById('stat-favorites').textContent = profile.total_favorites || 0;
+                document.getElementById('stat-achievements').textContent = 0;
 
                 // Form fields
-                document.getElementById('full_name').value = data.user.full_name || '';
-                document.getElementById('email').value = data.user.email || '';
-                document.getElementById('phone').value = data.user.phone || '';
-                document.getElementById('birth_date').value = data.user.birth_date || '';
-                document.getElementById('gender').value = data.user.gender || '';
-                document.getElementById('language').value = data.user.language || 'kk';
-                document.getElementById('country').value = data.user.country || '';
-                document.getElementById('city').value = data.user.city || '';
-                document.getElementById('bio').value = data.user.bio || '';
+                document.getElementById('full_name').value = profile.full_name || '';
+                document.getElementById('email').value = profile.email || '';
+                document.getElementById('phone').value = profile.phone || '';
+                document.getElementById('birth_date').value = profile.birth_date || '';
+                document.getElementById('gender').value = profile.gender || '';
+                document.getElementById('language').value = profile.language || 'kk';
+                document.getElementById('country').value = profile.country || '';
+                document.getElementById('city').value = profile.city || '';
+                document.getElementById('bio').value = profile.bio || '';
 
-                // Privacy settings
-                if (data.privacy) {
-                    document.getElementById('profile_public').checked = data.privacy.profile_public === 1;
-                    document.getElementById('show_email').checked = data.privacy.show_email === 1;
-                    document.getElementById('show_phone').checked = data.privacy.show_phone === 1;
-                    document.getElementById('show_visits').checked = data.privacy.show_visits === 1;
-                    document.getElementById('show_reviews').checked = data.privacy.show_reviews === 1;
-                    document.getElementById('show_favorites').checked = data.privacy.show_favorites === 1;
-                    document.getElementById('allow_messages').checked = data.privacy.allow_messages === 1;
-                }
+                // Privacy settings - profile includes privacy
+                document.getElementById('profile_public').checked = profile.profile_public === 1;
+                document.getElementById('show_email').checked = profile.show_email === 1;
+                document.getElementById('show_phone').checked = profile.show_phone === 1;
+                document.getElementById('show_visits').checked = profile.show_visits === 1;
+                document.getElementById('show_reviews').checked = profile.show_reviews === 1;
+                document.getElementById('show_favorites').checked = profile.show_favorites === 1;
+                document.getElementById('allow_messages').checked = profile.allow_messages === 1;
 
             } catch (error) {
-                console.error('Load profile error:', error);
+                console.error('❌ Load profile error:', error);
+                console.log('🗑️ Clearing tokens and redirecting to login');
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 window.location.href = 'login.html';

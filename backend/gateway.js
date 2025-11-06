@@ -97,10 +97,31 @@ app.use('/api/chat', (req, res) => {
 });
 
 // Auth Service
-app.use('/api/auth', (req, res) => {
-    const originalPath = req.path;
-    console.log(`[GATEWAY] Proxying /api/auth${originalPath} -> ${SERVICES.auth}${originalPath}`);
-    proxyRequest(SERVICES.auth, req, res);
+app.use('/api/auth', async (req, res) => {
+    try {
+        const fullPath = req.originalUrl; // /api/auth/login
+        const url = `${SERVICES.auth}${fullPath}`;
+        console.log(`[GATEWAY] Proxying ${fullPath} -> ${url}`);
+        
+        const response = await axios({
+            method: req.method,
+            url: url,
+            data: req.body,
+            params: req.query,
+            headers: {
+                'Content-Type': 'application/json',
+                ...req.headers
+            },
+            timeout: 5000
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error(`❌ [GATEWAY] Auth service error:`, error.message);
+        res.status(error.response?.status || 500).json({
+            error: error.response?.data?.error || 'Сервис временно недоступен'
+        });
+    }
 });
 
 // ========================================
