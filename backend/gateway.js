@@ -20,7 +20,8 @@ const SERVICES = {
     places: process.env.PLACES_URL || 'http://localhost:3001',
     weather: process.env.WEATHER_URL || 'http://localhost:3002',
     map: process.env.MAP_URL || 'http://localhost:3003',
-    chat: process.env.CHAT_URL || 'http://localhost:3004'
+    chat: process.env.CHAT_URL || 'http://localhost:3004',
+    auth: process.env.AUTH_URL || 'http://localhost:3005'
 };
 
 // Middleware
@@ -95,6 +96,13 @@ app.use('/api/chat', (req, res) => {
     proxyRequest(SERVICES.chat, req, res);
 });
 
+// Auth Service
+app.use('/api/auth', (req, res) => {
+    const originalPath = req.path;
+    console.log(`[GATEWAY] Proxying /api/auth${originalPath} -> ${SERVICES.auth}${originalPath}`);
+    proxyRequest(SERVICES.auth, req, res);
+});
+
 // ========================================
 // МОНИТОРИНГ СЕРВИСОВ
 // ========================================
@@ -148,6 +156,7 @@ app.listen(PORT, () => {
     console.log(`   🌤️  Weather: ${SERVICES.weather}`);
     console.log(`   🗺️  Map:     ${SERVICES.map}`);
     console.log(`   💬 Chat:    ${SERVICES.chat}`);
+    console.log(`   🔐 Auth:    ${SERVICES.auth}`);
     console.log('========================================\n');
 });
 

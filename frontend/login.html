@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кіру / Тіркелу - TravelMap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab:hover {
+            background: white;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: shake 0.5s;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .strength-weak { color: #c33; }
+        .strength-medium { color: #f90; }
+        .strength-strong { color: #3c3; }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ TravelMap</h1>
+            <p>Саяхатыңызды бастаңыз</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="login">Кіру</div>
+            <div class="tab" data-tab="register">Тіркелу</div>
+        </div>
+
+        <div class="form-container">
+            <!-- Login Form -->
+            <div id="login-form" class="form-section active">
+                <div id="login-error" class="error-message"></div>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username">Логин немесе Email</label>
+                        <input type="text" id="login-username" required autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Құпия сөз</label>
+                        <input type="password" id="login-password" required autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="btn" id="login-btn">Кіру</button>
+                </form>
+
+                <div class="link">
+                    <a href="index.html">← Басты бетке оралу</a>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="form-section">
+                <div id="register-error" class="error-message"></div>
+                <div id="register-success" class="success-message"></div>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="reg-username">Пайдаланушы аты*</label>
+                        <input type="text" id="reg-username" required minlength="3" autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-email">Email*</label>
+                        <input type="email" id="reg-email" required autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-fullname">Толық аты</label>
+                        <input type="text" id="reg-fullname" autocomplete="name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-password">Құпия сөз*</label>
+                        <input type="password" id="reg-password" required minlength="6" autocomplete="new-password" oninput="checkPasswordStrength()">
+                        <div id="password-strength" class="password-strength"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-confirm">Құпия сөзді растау*</label>
+                        <input type="password" id="reg-confirm" required minlength="6" autocomplete="new-password">
+                    </div>
+
+                    <button type="submit" class="btn" id="register-btn">Тіркелу</button>
+                </form>
+
+                <div class="link">
+                    <a href="index.html">← Басты бетке оралу</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                
+                // Update tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update forms
+                document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+                document.getElementById(`${targetTab}-form`).classList.add('active');
+                
+                // Clear messages
+                hideError('login');
+                hideError('register');
+                hideSuccess('register');
+            });
+        });
+
+        // Login Handler
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+            
+            hideError('login');
+            btn.disabled = true;
+            btn.textContent = 'Күте тұрыңыз...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.token) {
+                    // Save token and user data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Redirect based on role
+                    if (data.user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'profile.html';
+                    }
+                } else {
+                    showError('login', data.error || 'Кіру қатесі');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('login', 'Сервермен байланыс жоқ');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Кіру';
+            }
+        }
+
+        // Register Handler
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const fullName = document.getElementById('reg-fullname').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            const btn = document.getElementById('register-btn');
+            
+            hideError('register');
+            hideSuccess('register');
+            
+            // Validate
+            if (password !== confirm) {
+                showError('register', 'Құпия сөздер сәйкес келмейді');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('register', 'Құпия сөз кемінде 6 таңбадан тұруы керек');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Күте тұрыңыз...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        full_name: fullName || username
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('register', 'Тіркелу сәтті! Енді кіре аласыз');
+                    
+                    // Clear form
+                    event.target.reset();
+                    document.getElementById('password-strength').classList.remove('show');
+                    
+                    // Switch to login after 2 seconds
+                    setTimeout(() => {
+                        document.querySelector('.tab[data-tab="login"]').click();
+                    }, 2000);
+                } else {
+                    showError('register', data.error || 'Тіркелу қатесі');
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                showError('register', 'Сервермен байланыс жоқ');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Тіркелу';
+            }
+        }
+
+        // Password strength checker
+        function checkPasswordStrength() {
+            const password = document.getElementById('reg-password').value;
+            const strengthDiv = document.getElementById('password-strength');
+            
+            if (!password) {
+                strengthDiv.classList.remove('show');
+                return;
+            }
+            
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z\d]/.test(password)) strength++;
+            
+            strengthDiv.classList.add('show');
+            
+            if (strength <= 2) {
+                strengthDiv.className = 'password-strength show strength-weak';
+                strengthDiv.textContent = '⚠️ Әлсіз құпия сөз';
+            } else if (strength <= 3) {
+                strengthDiv.className = 'password-strength show strength-medium';
+                strengthDiv.textContent = '⚡ Орташа құпия сөз';
+            } else {
+                strengthDiv.className = 'password-strength show strength-strong';
+                strengthDiv.textContent = '✅ Күшті құпия сөз';
+            }
+        }
+
+        // Helper functions
+        function showError(form, message) {
+            const errorDiv = document.getElementById(`${form}-error`);
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function hideError(form) {
+            const errorDiv = document.getElementById(`${form}-error`);
+            errorDiv.classList.remove('show');
+        }
+
+        function showSuccess(form, message) {
+            const successDiv = document.getElementById(`${form}-success`);
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+        }
+
+        function hideSuccess(form) {
+            const successDiv = document.getElementById(`${form}-success`);
+            successDiv.classList.remove('show');
+        }
+
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'profile.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

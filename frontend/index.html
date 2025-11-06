@@ -43,6 +43,9 @@
                 <li><a href="#chatbot"><i class="fa-solid fa-comments"></i> Чатбот</a></li>
                 <li><a href="#weather"><i class="fa-solid fa-cloud-sun"></i> Ауа райы</a></li>
                 <li><a href="monitor.html"><i class="fa-solid fa-chart-line"></i> Мониторинг</a></li>
+                <li><a href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Кіру</a></li>
+                <li><a href="profile.html" id="profile-link" style="display: none;"><i class="fa-solid fa-user"></i> Профиль</a></li>
+                <li><a href="admin.html" id="admin-link" style="display: none;"><i class="fa-solid fa-shield-halved"></i> Админ</a></li>
             </ul>
         </div>
     </nav>
@@ -190,5 +193,28 @@
     
     <!-- Main App JS -->
     <script src="app.js"></script>
+
+    <!-- Auth Navigation Script -->
+    <script>
+        // Check if user is logged in and update navigation
+        (function() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (token && user.username) {
+                // Hide login button, show profile/admin
+                const loginLink = document.querySelector('a[href="login.html"]')?.parentElement;
+                if (loginLink) loginLink.style.display = 'none';
+                
+                const profileLink = document.getElementById('profile-link');
+                if (profileLink) profileLink.style.display = 'block';
+                
+                if (user.role === 'admin') {
+                    const adminLink = document.getElementById('admin-link');
+                    if (adminLink) adminLink.style.display = 'block';
+                }
+            }
+        })();
+    </script>
 </body>
 </html>

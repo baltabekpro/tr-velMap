@@ -11,9 +11,11 @@
     "start:weather": "node services/weather-service.js",
     "start:map": "node services/map-service.js",
     "start:chat": "node services/chat-service.js",
-    "start:all": "concurrently \"npm run start:gateway\" \"npm run start:places\" \"npm run start:weather\" \"npm run start:map\" \"npm run start:chat\"",
+    "start:auth": "node services/auth-service.js",
+    "start:all": "concurrently \"npm run start:gateway\" \"npm run start:places\" \"npm run start:weather\" \"npm run start:map\" \"npm run start:chat\" \"npm run start:auth\"",
     "dev:gateway": "nodemon gateway.js",
-    "dev:all": "concurrently \"npm run dev:gateway\" \"nodemon services/places-service.js\" \"nodemon services/weather-service.js\" \"nodemon services/map-service.js\" \"nodemon services/chat-service.js\""
+    "dev:all": "concurrently \"npm run dev:gateway\" \"nodemon services/places-service.js\" \"nodemon services/weather-service.js\" \"nodemon services/map-service.js\" \"nodemon services/chat-service.js\" \"nodemon services/auth-service.js\"",
+    "init:db": "node scripts/init-db.js"
   },
   "keywords": [
     "microservices",
@@ -24,10 +26,13 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.13.2",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

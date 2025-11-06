@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менің профилім - TravelMap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+            margin: 0 auto 20px;
+        }
+
+        .user-name {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .user-username {
+            text-align: center;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .success-message,
+        .error-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+        }
+
+        .success-message.show,
+        .error-message.show {
+            display: block;
+        }
+
+        .privacy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ TravelMap - Менің профилім</h1>
+            <div class="header-buttons">
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">🏠 Басты бет</button>
+                <button class="btn btn-secondary" onclick="logout()">🚪 Шығу</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="avatar" id="avatar">👤</div>
+                <div class="user-name" id="user-name">Жүктелуде...</div>
+                <div class="user-username" id="user-username">@username</div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-visits">0</div>
+                        <div class="stat-label">Бару орындары</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-reviews">0</div>
+                        <div class="stat-label">Пікірлер</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-favorites">0</div>
+                        <div class="stat-label">Таңдаулылар</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-achievements">0</div>
+                        <div class="stat-label">Жетістіктер</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="tabs">
+                    <div class="tab active" data-tab="profile">📝 Профиль</div>
+                    <div class="tab" data-tab="password">🔐 Құпия сөз</div>
+                    <div class="tab" data-tab="privacy">🔒 Құпиялық</div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div id="tab-profile" class="tab-content active">
+                    <div id="profile-success" class="success-message"></div>
+                    <div id="profile-error" class="error-message"></div>
+
+                    <form onsubmit="updateProfile(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Толық аты</label>
+                                <input type="text" id="full_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="email" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Телефон</label>
+                                <input type="tel" id="phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Туған күні</label>
+                                <input type="date" id="birth_date">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Жынысы</label>
+                                <select id="gender">
+                                    <option value="">Таңдау</option>
+                                    <option value="male">Еркек</option>
+                                    <option value="female">Әйел</option>
+                                    <option value="other">Басқа</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Тіл</label>
+                                <select id="language">
+                                    <option value="kk">Қазақша</option>
+                                    <option value="ru">Русский</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Ел</label>
+                                <input type="text" id="country">
+                            </div>
+                            <div class="form-group">
+                                <label>Қала</label>
+                                <input type="text" id="city">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Өзім туралы</label>
+                            <textarea id="bio" rows="4" placeholder="Өзіңіз туралы айтып беріңіз..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">💾 Сақтау</button>
+                    </form>
+                </div>
+
+                <!-- Password Tab -->
+                <div id="tab-password" class="tab-content">
+                    <div id="password-success" class="success-message"></div>
+                    <div id="password-error" class="error-message"></div>
+
+                    <form onsubmit="changePassword(event)">
+                        <div class="form-group">
+                            <label>Ескі құпия сөз</label>
+                            <input type="password" id="old_password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Жаңа құпия сөз</label>
+                            <input type="password" id="new_password" required minlength="6">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Жаңа құпия сөзді растау</label>
+                            <input type="password" id="confirm_password" required minlength="6">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">🔐 Құпия сөзді өзгерту</button>
+                    </form>
+                </div>
+
+                <!-- Privacy Tab -->
+                <div id="tab-privacy" class="tab-content">
+                    <div id="privacy-success" class="success-message"></div>
+                    <div id="privacy-error" class="error-message"></div>
+
+                    <div class="privacy-item">
+                        <div>
+                            <strong>Профильді ашық көрсету</strong>
+                            <p style="font-size: 12px; color: #999;">Барлығы профиліңізді көре алады</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="profile_public" onchange="updatePrivacy()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div>
+                            <strong>Email көрсету</strong>
+                            <p style="font-size: 12px; color: #999;">Email мекенжайыңыз көрінеді</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="show_email" onchange="updatePrivacy()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div>
+                            <strong>Телефон көрсету</strong>
+                            <p style="font-size: 12px; color: #999;">Телефон нөміріңіз көрінеді</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="show_phone" onchange="updatePrivacy()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div>
+                            <strong>Бару орындарды көрсету</strong>
+                            <p style="font-size: 12px; color: #999;">Сіз барған орындар көрінеді</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="show_visits" onchange="updatePrivacy()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div>
+                            <strong>Пікірлерді көрсету</strong>
+                            <p style="font-size: 12px; color: #999;">Жазған пікірлеріңіз көрінеді</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="show_reviews" onchange="updatePrivacy()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div>
+                            <strong>Таңдаулыларды көрсету</strong>
+                            <p style="font-size: 12px; color: #999;">Таңдаулы орындарыңыз көрінеді</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="show_favorites" onchange="updatePrivacy()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div>
+                            <strong>Хабарламаларға рұқсат</strong>
+                            <p style="font-size: 12px; color: #999;">Басқалар сізге жаза алады</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="allow_messages" onchange="updatePrivacy()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+        let currentUser = null;
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`tab-${targetTab}`).classList.add('active');
+            });
+        });
+
+        // Load user profile
+        async function loadProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Unauthorized');
+                }
+
+                const data = await response.json();
+                currentUser = data.user;
+
+                // Update UI
+                document.getElementById('user-name').textContent = data.user.full_name || data.user.username;
+                document.getElementById('user-username').textContent = `@${data.user.username}`;
+                document.getElementById('avatar').textContent = data.user.full_name ? data.user.full_name[0].toUpperCase() : '👤';
+
+                // Stats
+                document.getElementById('stat-visits').textContent = data.stats?.total_visits || 0;
+                document.getElementById('stat-reviews').textContent = data.stats?.total_reviews || 0;
+                document.getElementById('stat-favorites').textContent = data.stats?.total_favorites || 0;
+                document.getElementById('stat-achievements').textContent = data.stats?.total_achievements || 0;
+
+                // Form fields
+                document.getElementById('full_name').value = data.user.full_name || '';
+                document.getElementById('email').value = data.user.email || '';
+                document.getElementById('phone').value = data.user.phone || '';
+                document.getElementById('birth_date').value = data.user.birth_date || '';
+                document.getElementById('gender').value = data.user.gender || '';
+                document.getElementById('language').value = data.user.language || 'kk';
+                document.getElementById('country').value = data.user.country || '';
+                document.getElementById('city').value = data.user.city || '';
+                document.getElementById('bio').value = data.user.bio || '';
+
+                // Privacy settings
+                if (data.privacy) {
+                    document.getElementById('profile_public').checked = data.privacy.profile_public === 1;
+                    document.getElementById('show_email').checked = data.privacy.show_email === 1;
+                    document.getElementById('show_phone').checked = data.privacy.show_phone === 1;
+                    document.getElementById('show_visits').checked = data.privacy.show_visits === 1;
+                    document.getElementById('show_reviews').checked = data.privacy.show_reviews === 1;
+                    document.getElementById('show_favorites').checked = data.privacy.show_favorites === 1;
+                    document.getElementById('allow_messages').checked = data.privacy.allow_messages === 1;
+                }
+
+            } catch (error) {
+                console.error('Load profile error:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Update profile
+        async function updateProfile(event) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+
+            hideMessage('profile');
+
+            const profileData = {
+                full_name: document.getElementById('full_name').value,
+                phone: document.getElementById('phone').value,
+                birth_date: document.getElementById('birth_date').value,
+                gender: document.getElementById('gender').value,
+                language: document.getElementById('language').value,
+                country: document.getElementById('country').value,
+                city: document.getElementById('city').value,
+                bio: document.getElementById('bio').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccess('profile', 'Профиль сәтті жаңартылды! ✅');
+                    loadProfile();
+                } else {
+                    showError('profile', data.error || 'Жаңарту қатесі');
+                }
+            } catch (error) {
+                console.error('Update profile error:', error);
+                showError('profile', 'Сервермен байланыс жоқ');
+            }
+        }
+
+        // Change password
+        async function changePassword(event) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+
+            hideMessage('password');
+
+            const oldPassword = document.getElementById('old_password').value;
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            if (newPassword !== confirmPassword) {
+                showError('password', 'Құпия сөздер сәйкес келмейді');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/change-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        old_password: oldPassword,
+                        new_password: newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccess('password', 'Құпия сөз сәтті өзгертілді! ✅');
+                    event.target.reset();
+                } else {
+                    showError('password', data.error || 'Құпия сөз өзгерту қатесі');
+                }
+            } catch (error) {
+                console.error('Change password error:', error);
+                showError('password', 'Сервермен байланыс жоқ');
+            }
+        }
+
+        // Update privacy settings
+        async function updatePrivacy() {
+            const token = localStorage.getItem('token');
+
+            hideMessage('privacy');
+
+            const privacyData = {
+                profile_public: document.getElementById('profile_public').checked ? 1 : 0,
+                show_email: document.getElementById('show_email').checked ? 1 : 0,
+                show_phone: document.getElementById('show_phone').checked ? 1 : 0,
+                show_visits: document.getElementById('show_visits').checked ? 1 : 0,
+                show_reviews: document.getElementById('show_reviews').checked ? 1 : 0,
+                show_favorites: document.getElementById('show_favorites').checked ? 1 : 0,
+                allow_messages: document.getElementById('allow_messages').checked ? 1 : 0
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/privacy-settings`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(privacyData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccess('privacy', 'Құпиялық баптаулары сақталды! ✅');
+                } else {
+                    showError('privacy', data.error || 'Сақтау қатесі');
+                }
+            } catch (error) {
+                console.error('Update privacy error:', error);
+                showError('privacy', 'Сервермен байланыс жоқ');
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Helper functions
+        function showSuccess(form, message) {
+            const elem = document.getElementById(`${form}-success`);
+            elem.textContent = message;
+            elem.classList.add('show');
+            setTimeout(() => elem.classList.remove('show'), 3000);
+        }
+
+        function showError(form, message) {
+            const elem = document.getElementById(`${form}-error`);
+            elem.textContent = message;
+            elem.classList.add('show');
+        }
+
+        function hideMessage(form) {
+            document.getElementById(`${form}-success`).classList.remove('show');
+            document.getElementById(`${form}-error`).classList.remove('show');
+        }
+
+        // Load profile on page load
+        window.addEventListener('load', loadProfile);
+    </script>
+</body>
+</html>

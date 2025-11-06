@@ -395,7 +395,7 @@
         <div class="status-summary">
             <div class="summary-card total">
                 <h3><i class="fas fa-server summary-icon"></i> Барлық сервистер</h3>
-                <div class="summary-value">5</div>
+                <div class="summary-value">6</div>
                 <p>Жүйедегі микросервистер</p>
             </div>
             <div class="summary-card online">
@@ -459,7 +459,8 @@
                 { name: 'Places Service', icon: 'fa-map-marked-alt', port: 3001, desc: 'Орындарды басқару', status: data.services?.places },
                 { name: 'Weather Service', icon: 'fa-cloud-sun', port: 3002, desc: 'Ауа-райы деректері', status: data.services?.weather },
                 { name: 'Map Service', icon: 'fa-map', port: 3003, desc: 'Карта қызметтері', status: data.services?.map },
-                { name: 'Chat Service', icon: 'fa-comments', port: 3004, desc: 'AI чат-боты', status: data.services?.chat }
+                { name: 'Chat Service', icon: 'fa-comments', port: 3004, desc: 'AI чат-боты', status: data.services?.chat },
+                { name: 'Auth Service', icon: 'fa-shield-halved', port: 3005, desc: 'Аутентификация қызметі', status: data.services?.auth }
             ];
 
             container.innerHTML = services.map(s => {
@@ -535,7 +536,7 @@
         }
 
         function updateSummary(data) {
-            const services = [data.gateway, data.services?.places, data.services?.weather, data.services?.map, data.services?.chat];
+            const services = [data.gateway, data.services?.places, data.services?.weather, data.services?.map, data.services?.chat, data.services?.auth];
             const onlineCount = services.filter(s => s?.status === 'online' || s?.status === 'healthy').length;
             const offlineCount = services.filter(s => s?.status !== 'online' && s?.status !== 'healthy').length;
             
@@ -591,7 +592,8 @@
                 { name: 'Places Service', url: 'http://localhost:3001/health' },
                 { name: 'Weather Service', url: 'http://localhost:3002/health' },
                 { name: 'Map Service', url: 'http://localhost:3003/health' },
-                { name: 'Chat Service', url: 'http://localhost:3004/health' }
+                { name: 'Chat Service', url: 'http://localhost:3004/health' },
+                { name: 'Auth Service', url: 'http://localhost:3005/health' }
             ];
             
             console.log('🔍 === БАРЛЫҚ СЕРВИСТЕРДІ ТЕКСЕРУ ===');
