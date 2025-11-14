@@ -43,6 +43,9 @@ router.post('/:id/rating', authenticate, userPlacesController.ratePlace);
 // POST /api/places/:id/review - Добавить отзыв
 router.post('/:id/review', authenticate, userPlacesController.addReview);
 
+// DELETE /api/places/:placeId/reviews/:reviewId - Удалить отзыв (только для админа)
+router.delete('/:placeId/reviews/:reviewId', authenticate, requireAdmin, placesController.deleteReview);
+
 // POST /api/places/:id/like - Лайк отзыва
 router.post('/:id/like', authenticate, userPlacesController.likeReview);
 

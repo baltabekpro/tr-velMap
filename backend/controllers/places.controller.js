@@ -56,24 +56,30 @@ exports.getAllPlaces = (req, res) => {
     
     const db = new sqlite3.Database(dbPath);
     
-    let query = 'SELECT * FROM places WHERE status = ?';
+    let query = `
+        SELECT p.*, 
+               COUNT(DISTINCT pr.id) as review_count
+        FROM places p
+        LEFT JOIN user_reviews pr ON p.id = pr.place_id
+        WHERE p.status = ?
+    `;
     const params = ['active'];
     
     // Фильтр по категории
     if (category) {
-        query += ' AND category = ?';
+        query += ' AND p.category = ?';
         params.push(category);
     }
     
     // Поиск
     if (search) {
-        query += ' AND (name_kk LIKE ? OR name_ru LIKE ? OR name_en LIKE ?)';
+        query += ' AND (p.name_kk LIKE ? OR p.name_ru LIKE ? OR p.name_en LIKE ?)';
         const searchPattern = `%${search}%`;
         params.push(searchPattern, searchPattern, searchPattern);
     }
     
-    // Сортировка и лимит
-    query += ' ORDER BY rating DESC, visit_count DESC LIMIT ?';
+    // Группировка, сортировка и лимит
+    query += ' GROUP BY p.id ORDER BY p.rating DESC, p.visit_count DESC LIMIT ?';
     params.push(parseInt(limit));
     
     db.all(query, params, (err, rows) => {
@@ -87,7 +93,10 @@ exports.getAllPlaces = (req, res) => {
             });
         }
         
-        const places = rows.map(formatPlace);
+        const places = rows.map(place => ({
+            ...formatPlace(place),
+            review_count: place.review_count || 0
+        }));
         
         res.json({
             success: true,
@@ -469,6 +478,75 @@ exports.deletePlace = (req, res) => {
                     });
                 }
             );
+        });
+    });
+};
+
+/**
+ * DELETE /api/places/:placeId/reviews/:reviewId - Удалить отзыв (только для админа)
+ */
+exports.deleteReview = (req, res) => {
+    const { placeId, reviewId } = req.params;
+    
+    if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({
+            success: false,
+            error: 'Рұқсат жоқ. Әкімші рөлі қажет.'
+        });
+    }
+
+    const db = new sqlite3.Database(dbPath);
+
+    // Получаем информацию об отзыве перед удалением
+    db.get('SELECT * FROM user_reviews WHERE id = ? AND place_id = ?', [reviewId, placeId], (err, review) => {
+        if (err) {
+            db.close();
+            console.error('Ошибка получения отзыва:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Қате орын алды'
+            });
+        }
+
+        if (!review) {
+            db.close();
+            return res.status(404).json({
+                success: false,
+                error: 'Пікір табылмады'
+            });
+        }
+
+        // Удаляем лайки отзыва
+        db.run('DELETE FROM review_likes WHERE review_id = ?', [reviewId], (err) => {
+            if (err) {
+                console.error('Ошибка удаления лайков:', err);
+            }
+
+            // Удаляем отзыв
+            db.run('DELETE FROM user_reviews WHERE id = ?', [reviewId], (err) => {
+                if (err) {
+                    db.close();
+                    console.error('Ошибка удаления отзыва:', err);
+                    return res.status(500).json({
+                        success: false,
+                        error: 'Қате орын алды'
+                    });
+                }
+
+                // Логируем действие
+                db.run(
+                    'INSERT INTO admin_logs (admin_id, action, target_type, target_id, description) VALUES (?, ?, ?, ?, ?)',
+                    [req.user.id, 'delete_review', 'review', reviewId, `Удален отзыв пользователя ${review.user_id} для места ${placeId}`],
+                    () => {
+                        db.close();
+                        
+                        res.json({
+                            success: true,
+                            message: 'Пікір сәтті жойылды'
+                        });
+                    }
+                );
+            });
         });
     });
 };

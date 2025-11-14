@@ -18,7 +18,7 @@ function getPlaceIdFromUrl() {
 
 // Загрузка текущего пользователя
 async function loadCurrentUser() {
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     if (!token) {
         return null;
     }
@@ -62,7 +62,7 @@ function updateNavigation() {
 // Загрузка данных места
 async function loadPlaceData(placeId) {
     try {
-        const token = localStorage.getItem('travelmap_token');
+        const token = localStorage.getItem('token');
         const headers = {};
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -287,12 +287,12 @@ function initPlaceMap() {
 // Добавить/удалить из избранного
 async function toggleFavorite() {
     if (!currentUser) {
-        alert('Избранныйға қосу үшін кіріңіз');
-        window.location.href = 'login.html';
+        showNotification('Избранныйға қосу үшін алдымен жүйеге кіріңіз', 'warning', '🔒 Аутентификация');
+        setTimeout(() => window.location.href = 'login.html', 1500);
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     const method = isFavorite ? 'DELETE' : 'POST';
     
     try {
@@ -313,11 +313,15 @@ async function toggleFavorite() {
             `;
             btn.className = isFavorite ? 'action-btn active' : 'action-btn primary';
             
-            showNotification(isFavorite ? 'Избранныйға қосылды' : 'Избранныйдан өшірілді', 'success');
+            showNotification(
+                isFavorite ? 'Орын сіздің избранныйға сәтті қосылды!' : 'Орын избранныйдан өшірілді', 
+                'success',
+                isFavorite ? '❤️ Избранныйға қосылды' : '🗑️ Өшірілді'
+            );
         }
     } catch (error) {
         console.error('Error toggling favorite:', error);
-        showNotification('Қате орын алды', 'error');
+        showNotification('Избранныйға қосу/өшіру кезінде қате орын алды', 'error', '⚠️ Қате');
     }
 }
 
@@ -336,16 +340,16 @@ function setRating(rating) {
 // Отправить рейтинг
 async function submitRating() {
     if (!currentUser) {
-        alert('Рейтинг қалдыру үшін кіріңіз');
+        showNotification('Рейтинг қалдыру үшін алдымен жүйеге кіріңіз', 'warning', '🔒 Аутентификация');
         return;
     }
     
     if (userRating === 0) {
-        alert('Рейтинг таңдаңыз');
+        showNotification('Рейтинг таңдаңыз', 'warning', '⭐ Рейтинг');
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/rating`, {
@@ -358,20 +362,20 @@ async function submitRating() {
         });
         
         if (response.ok) {
-            showNotification('Рейтинг сақталды!', 'success');
+            showNotification('Сіздің бағаңыз сәтті сақталды!', 'success', `⭐ ${userRating} жұлдыз`);
             // Reload place to get updated rating
             setTimeout(() => loadPlaceData(currentPlace.id), 1000);
         }
     } catch (error) {
         console.error('Error submitting rating:', error);
-        showNotification('Қате орын алды', 'error');
+        showNotification('Рейтинг жіберу кезінде қате орын алды', 'error', '⚠️ Қате');
     }
 }
 
 // Отправить отзыв
 async function submitReview() {
     if (!currentUser) {
-        alert('Пікір қалдыру үшін кіріңіз');
+        showNotification('Пікір қалдыру үшін алдымен жүйеге кіріңіз', 'warning', '🔒 Аутентификация');
         return;
     }
     
@@ -380,11 +384,11 @@ async function submitReview() {
     const rating = parseInt(document.getElementById('review-rating').value);
     
     if (!content) {
-        alert('Пікіріңізді жазыңыз');
+        showNotification('Пікіріңізді жазыңыз', 'warning', '✍️ Пікір');
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/review`, {
@@ -397,7 +401,7 @@ async function submitReview() {
         });
         
         if (response.ok) {
-            showNotification('Пікір сақталды!', 'success');
+            showNotification('Сіздің пікіріңіз сәтті жарияланды!', 'success', '✅ Пікір жіберілді');
             // Clear form
             document.getElementById('review-title').value = '';
             document.getElementById('review-content').value = '';
@@ -406,18 +410,18 @@ async function submitReview() {
         }
     } catch (error) {
         console.error('Error submitting review:', error);
-        showNotification('Қате орын алды', 'error');
+        showNotification('Пікір жіберу кезінде қате орын алды', 'error', '⚠️ Қате');
     }
 }
 
 // Лайкнуть отзыв
 async function likeReview(reviewId) {
     if (!currentUser) {
-        alert('Лайк қою үшін кіріңіз');
+        showNotification('Лайк қою үшін алдымен жүйеге кіріңіз', 'warning', '🔒 Аутентификация');
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/like`, {
@@ -440,12 +444,12 @@ async function likeReview(reviewId) {
 // Добавить в историю посещений
 async function addToVisitHistory() {
     if (!currentUser) {
-        alert('Тарихқа қосу үшін кіріңіз');
-        window.location.href = 'login.html';
+        showNotification('Тарихқа қосу үшін алдымен жүйеге кіріңіз', 'warning', '🔒 Аутентификация');
+        setTimeout(() => window.location.href = 'login.html', 1500);
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/visit`, {
@@ -460,11 +464,11 @@ async function addToVisitHistory() {
         });
         
         if (response.ok) {
-            showNotification('Тарихқа қосылды!', 'success');
+            showNotification('Сіздің саяхат тарихыңызға қосылды!', 'success', '📍 Тарих');
         }
     } catch (error) {
         console.error('Error adding visit:', error);
-        showNotification('Қате орын алды', 'error');
+        showNotification('Тарихқа қосу кезінде қате орын алды', 'error', '⚠️ Қате');
     }
 }
 
@@ -479,7 +483,7 @@ function sharePlace() {
         });
     } else {
         navigator.clipboard.writeText(url);
-        showNotification('Сілтеме көшірілді!', 'success');
+        showNotification('Сілтеме буферге көшірілді!', 'success', '📋 Көшірілді');
     }
 }
 
@@ -509,9 +513,58 @@ function formatDate(dateString) {
     return date.toLocaleDateString('kk-KZ');
 }
 
-function showNotification(message, type = 'info') {
-    // Simple alert for now, can be replaced with a better notification system
-    alert(message);
+function showNotification(message, type = 'info', title = null) {
+    const container = document.getElementById('toast-container');
+    
+    // Определяем заголовок и иконку в зависимости от типа
+    const config = {
+        success: {
+            title: title || '✓ Сәтті',
+            icon: 'fa-circle-check'
+        },
+        error: {
+            title: title || '✗ Қате',
+            icon: 'fa-circle-xmark'
+        },
+        warning: {
+            title: title || '⚠ Назар аударыңыз',
+            icon: 'fa-triangle-exclamation'
+        },
+        info: {
+            title: title || 'ℹ Ақпарат',
+            icon: 'fa-circle-info'
+        }
+    };
+    
+    const settings = config[type] || config.info;
+    
+    // Создаем toast элемент
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="fa-solid ${settings.icon}"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">${settings.title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <div class="toast-close" onclick="this.parentElement.remove()">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Автоматически удаляем через 4 секунды
+    setTimeout(() => {
+        toast.classList.add('removing');
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 300);
+    }, 4000);
 }
 
 // Инициализация при загрузке страницы
