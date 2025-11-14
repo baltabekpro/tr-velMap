@@ -103,15 +103,22 @@ app.use('/api/auth', async (req, res) => {
         const url = `${SERVICES.auth}${fullPath}`;
         console.log(`[GATEWAY] Proxying ${fullPath} -> ${url}`);
         
+        // Forward only necessary headers, avoiding host and connection headers
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        
+        // Forward Authorization header if present
+        if (req.headers.authorization) {
+            headers['Authorization'] = req.headers.authorization;
+        }
+        
         const response = await axios({
             method: req.method,
             url: url,
             data: req.body,
             params: req.query,
-            headers: {
-                'Content-Type': 'application/json',
-                ...req.headers
-            },
+            headers: headers,
             timeout: 5000
         });
         

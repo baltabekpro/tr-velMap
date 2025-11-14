@@ -54,7 +54,7 @@ async function apiRequest(endpoint, options = {}) {
     };
     
     // Токенді қосу (егер пайдаланушы кірген болса)
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('token');
     if (token) {
         defaultOptions.headers['Authorization'] = `Bearer ${token}`;
     }

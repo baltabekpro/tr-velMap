@@ -461,7 +461,7 @@
                 if (!response.ok) throw new Error('Unauthorized');
 
                 const data = await response.json();
-                currentUser = data.user;
+                currentUser = data.profile || data.user || data.data;
 
                 if (currentUser.role !== 'admin') {
                     alert('Қол жетімділік жоқ! Тек әкімшілер үшін.');
@@ -506,12 +506,13 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('stat-total-users').textContent = data.totalUsers || 0;
-                    document.getElementById('stat-active-users').textContent = data.activeUsers || 0;
-                    document.getElementById('stat-banned-users').textContent = data.bannedUsers || 0;
-                    document.getElementById('stat-admins').textContent = data.admins || 0;
-                    document.getElementById('stat-reviews').textContent = data.totalReviews || 0;
-                    document.getElementById('stat-visits').textContent = data.totalVisits || 0;
+                    const stats = data.stats || data;
+                    document.getElementById('stat-total-users').textContent = stats.totalUsers || 0;
+                    document.getElementById('stat-active-users').textContent = stats.activeUsers || 0;
+                    document.getElementById('stat-banned-users').textContent = stats.bannedUsers || 0;
+                    document.getElementById('stat-admins').textContent = stats.admins || 0;
+                    document.getElementById('stat-reviews').textContent = stats.totalReviews || 0;
+                    document.getElementById('stat-visits').textContent = stats.totalVisits || 0;
                 }
             } catch (error) {
                 console.error('Load stats error:', error);
