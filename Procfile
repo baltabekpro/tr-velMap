@@ -1,1 +1,1 @@
-web: cd backend && node gateway.js
+web: cd backend && npm run start:all
