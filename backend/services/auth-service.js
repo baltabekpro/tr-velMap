@@ -264,6 +264,40 @@ app.post('/api/auth/verify', authenticateToken, (req, res) => {
     });
 });
 
+// Получить текущего пользователя (alias для /api/auth/profile для совместимости с frontend)
+app.get('/api/auth/me', authenticateToken, (req, res) => {
+    const sql = `
+        SELECT u.id, u.username, u.email, u.full_name, u.role, u.status, u.avatar_url,
+               u.phone, u.bio, u.city, u.country, u.created_at,
+               s.total_visits, s.total_reviews, s.total_favorites
+        FROM users u
+        LEFT JOIN user_stats s ON u.id = s.user_id
+        WHERE u.id = ?
+    `;
+
+    db.get(sql, [req.user.id], (err, user) => {
+        if (err) {
+            console.error('Get current user error:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Ошибка получения данных пользователя'
+            });
+        }
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: 'Пользователь не найден'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: user
+        });
+    });
+});
+
 // ============= PROTECTED ROUTES =============
 
 // Получить профиль текущего пользователя
