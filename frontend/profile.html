@@ -350,6 +350,8 @@
                     <div class="tab active" data-tab="profile">📝 Профиль</div>
                     <div class="tab" data-tab="password">🔐 Құпия сөз</div>
                     <div class="tab" data-tab="privacy">🔒 Құпиялық</div>
+                    <div class="tab" data-tab="favorites">❤️ Таңдаулылар</div>
+                    <div class="tab" data-tab="history">🕐 Тарих</div>
                 </div>
 
                 <!-- Profile Tab -->
@@ -525,6 +527,22 @@
                             <input type="checkbox" id="allow_messages" onchange="updatePrivacy()">
                             <span class="slider"></span>
                         </label>
+                    </div>
+                </div>
+
+                <!-- Favorites Tab -->
+                <div id="tab-favorites" class="tab-content">
+                    <h2 style="margin-bottom: 20px;">❤️ Таңдаулы орындарым</h2>
+                    <div id="favorites-loading" class="loading" style="display: none;">Жүктелуде...</div>
+                    <div id="favorites-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                    </div>
+                </div>
+
+                <!-- Visit History Tab -->
+                <div id="tab-history" class="tab-content">
+                    <h2 style="margin-bottom: 20px;">🕐 Бару орындар тарихы</h2>
+                    <div id="history-loading" class="loading" style="display: none;">Жүктелуде...</div>
+                    <div id="history-container" style="display: grid; gap: 15px;">
                     </div>
                 </div>
             </div>
@@ -770,6 +788,106 @@
             document.getElementById(`${form}-success`).classList.remove('show');
             document.getElementById(`${form}-error`).classList.remove('show');
         }
+
+        // Load favorites
+        async function loadFavorites() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            const container = document.getElementById('favorites-container');
+            const loading = document.getElementById('favorites-loading');
+            
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/favorites`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.data && data.data.length > 0) {
+                    container.innerHTML = data.data.map(place => `
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer;" 
+                             onclick="window.location.href='place-details.html?id=${place.id}'">
+                            <img src="${place.image_url}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                            <h3 style="margin-bottom: 10px;">${place.name_kk}</h3>
+                            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">${place.description_kk ? place.description_kk.substring(0, 100) + '...' : ''}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #999;">
+                                <span>⭐ ${place.rating}</span>
+                                <span>📅 ${new Date(place.added_at).toLocaleDateString('kk-KZ')}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Таңдаулы орындар жоқ</p>';
+                }
+            } catch (error) {
+                console.error('Error loading favorites:', error);
+                container.innerHTML = '<p style="text-align: center; color: #ff4757;">Қате орын алды</p>';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Load visit history
+        async function loadVisitHistory() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            const container = document.getElementById('history-container');
+            const loading = document.getElementById('history-loading');
+            
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/visits`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.data && data.data.length > 0) {
+                    container.innerHTML = data.data.map(visit => `
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; gap: 20px; cursor: pointer;"
+                             onclick="window.location.href='place-details.html?id=${visit.place_id}'">
+                            <img src="${visit.image_url}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: 5px;">${visit.name_kk}</h3>
+                                <p style="color: #999; font-size: 14px; margin-bottom: 10px;">📅 ${new Date(visit.visit_date).toLocaleDateString('kk-KZ')}</p>
+                                ${visit.rating ? `<p style="color: #FFD700; margin-bottom: 5px;">⭐ ${visit.rating}/5</p>` : ''}
+                                ${visit.review ? `<p style="color: #666; font-size: 14px;">${visit.review}</p>` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Бару орындар тарихы жоқ</p>';
+                }
+            } catch (error) {
+                console.error('Error loading visit history:', error);
+                container.innerHTML = '<p style="text-align: center; color: #ff4757;">Қате орын алды</p>';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Update tab switching to load data
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                
+                // Load data when switching to favorites or history tabs
+                if (targetTab === 'favorites') {
+                    loadFavorites();
+                } else if (targetTab === 'history') {
+                    loadVisitHistory();
+                }
+            });
+        });
 
         // Load profile on page load
         window.addEventListener('load', loadProfile);
