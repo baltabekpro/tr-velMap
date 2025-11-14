@@ -1,0 +1,39 @@
+{
+  "name": "travelmap",
+  "description": "TravelMap Kazakhstan - Interactive travel guide for Almaty city",
+  "repository": "https://github.com/baltabekpro/tr-velMap",
+  "logo": "https://img.shields.io/badge/trАvelMap-1.0.0-blue.svg",
+  "keywords": [
+    "travel",
+    "tourism",
+    "almaty",
+    "kazakhstan",
+    "microservices",
+    "nodejs",
+    "express"
+  ],
+  "website": "https://github.com/baltabekpro/tr-velMap",
+  "success_url": "/",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "CORS_ORIGIN": {
+      "description": "CORS origin for frontend",
+      "value": "*"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "stack": "heroku-24"
+}

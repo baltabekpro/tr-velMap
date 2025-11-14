@@ -1,0 +1,23 @@
+{
+  "name": "travelmap",
+  "version": "1.0.0",
+  "description": "TravelMap Kazakhstan - Interactive travel guide for Almaty",
+  "main": "backend/gateway.js",
+  "scripts": {
+    "start": "cd backend && node gateway.js",
+    "postinstall": "cd backend && npm install"
+  },
+  "engines": {
+    "node": ">=14.x",
+    "npm": ">=6.x"
+  },
+  "keywords": [
+    "travel",
+    "tourism",
+    "almaty",
+    "kazakhstan",
+    "microservices"
+  ],
+  "author": "TravelMap Team",
+  "license": "MIT"
+}
