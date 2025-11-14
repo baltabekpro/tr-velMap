@@ -46,14 +46,23 @@ app.use(express.static(path.join(__dirname, '../')));
 async function proxyRequest(serviceUrl, req, res) {
     try {
         const url = `${serviceUrl}${req.path}`;
+        
+        // Forward necessary headers including Authorization
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        
+        // Forward Authorization header if present
+        if (req.headers.authorization) {
+            headers['Authorization'] = req.headers.authorization;
+        }
+        
         const response = await axios({
             method: req.method,
             url: url,
             data: req.body,
             params: req.query,
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             timeout: 5000
         });
         res.json(response.data);

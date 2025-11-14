@@ -5,9 +5,11 @@
  */
 
 const sqlite3 = require('sqlite3').verbose();
+const jwt = require('jsonwebtoken');
 const path = require('path');
 
 const dbPath = path.join(__dirname, '../../db/travelmap.db');
+const JWT_SECRET = process.env.JWT_SECRET || 'travelmap-secret-key-2024';
 
 /**
  * Middleware для проверки JWT токена
@@ -25,6 +27,50 @@ const authenticate = async (req, res, next) => {
         
         const token = authHeader.substring(7);
         
+        // Try JWT first
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            
+            // If JWT is valid, get user from database
+            const db = new sqlite3.Database(dbPath);
+            db.get(
+                'SELECT id, username, email, role, full_name, status FROM users WHERE id = ?',
+                [decoded.id],
+                (err, user) => {
+                    db.close();
+                    
+                    if (err || !user) {
+                        return res.status(401).json({
+                            success: false,
+                            error: 'Пользователь не найден'
+                        });
+                    }
+                    
+                    if (user.status === 'banned') {
+                        return res.status(403).json({
+                            success: false,
+                            error: 'Аккаунт заблокирован'
+                        });
+                    }
+                    
+                    // Добавляем пользователя в request
+                    req.user = {
+                        id: user.id,
+                        username: user.username,
+                        email: user.email,
+                        role: user.role,
+                        full_name: user.full_name
+                    };
+                    
+                    next();
+                }
+            );
+            return;
+        } catch (jwtError) {
+            // JWT verification failed, try database session
+        }
+        
+        // Fallback to database session tokens
         const db = new sqlite3.Database(dbPath);
         
         db.get(
@@ -105,6 +151,36 @@ const optionalAuth = async (req, res, next) => {
         
         const token = authHeader.substring(7);
         
+        // Try JWT first
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            
+            const db = new sqlite3.Database(dbPath);
+            db.get(
+                'SELECT id, username, email, role, full_name FROM users WHERE id = ? AND status = "active"',
+                [decoded.id],
+                (err, user) => {
+                    db.close();
+                    
+                    if (!err && user) {
+                        req.user = {
+                            id: user.id,
+                            username: user.username,
+                            email: user.email,
+                            role: user.role,
+                            full_name: user.full_name
+                        };
+                    }
+                    
+                    next();
+                }
+            );
+            return;
+        } catch (jwtError) {
+            // JWT verification failed, try database session
+        }
+        
+        // Fallback to database session tokens
         const db = new sqlite3.Database(dbPath);
         
         db.get(
