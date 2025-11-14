@@ -18,7 +18,7 @@ function getPlaceIdFromUrl() {
 
 // Загрузка текущего пользователя
 async function loadCurrentUser() {
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     if (!token) {
         return null;
     }
@@ -62,7 +62,7 @@ function updateNavigation() {
 // Загрузка данных места
 async function loadPlaceData(placeId) {
     try {
-        const token = localStorage.getItem('travelmap_token');
+        const token = localStorage.getItem('token');
         const headers = {};
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -292,7 +292,7 @@ async function toggleFavorite() {
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     const method = isFavorite ? 'DELETE' : 'POST';
     
     try {
@@ -345,7 +345,7 @@ async function submitRating() {
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/rating`, {
@@ -384,7 +384,7 @@ async function submitReview() {
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/review`, {
@@ -417,7 +417,7 @@ async function likeReview(reviewId) {
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/like`, {
@@ -445,7 +445,7 @@ async function addToVisitHistory() {
         return;
     }
     
-    const token = localStorage.getItem('travelmap_token');
+    const token = localStorage.getItem('token');
     
     try {
         const response = await fetch(`http://localhost:3000/api/places/${currentPlace.id}/visit`, {
