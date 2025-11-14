@@ -35,6 +35,7 @@ const weatherRouter = require('./routes/weather.routes');
 const mapRouter = require('./routes/map.routes');
 const chatRouter = require('./routes/chat.routes');
 const authRouter = require('./routes/auth.routes');
+const userRouter = require('./routes/user.routes');
 
 // Подключение роутов
 app.use('/api/places', placesRouter);
@@ -42,6 +43,7 @@ app.use('/api/weather', weatherRouter);
 app.use('/api/map', mapRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 
 // Статические файлы (для фронтенда)
 app.use(express.static(path.join(__dirname, '../')));

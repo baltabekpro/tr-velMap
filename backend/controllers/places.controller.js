@@ -4,222 +4,120 @@
  * ========================================
  * 
  * МАҚСАТЫ: Алматының демалыс орындарымен барлық операцияларды орындау
- * 
- * ФУНКЦИЯЛАРЫ:
- * - getAllPlaces()    - Барлық орындарды қайтару (сүзгілермен)
- * - getPlaceById()    - ID бойынша орынды табу және visit_count +1
- * - searchPlaces()    - Атауы, сипаттамасы бойынша іздеу
- * - createPlace()     - Жаңа орын қосу (болашақта админ үшін)
- * - updatePlace()     - Орынды жаңарту
- * - deletePlace()     - Орынды жою
- * 
- * ДЕРЕКТЕР ҚОЙМАСЫ: backend/data/places.json
- * БАСТАПҚЫ ДЕРЕКТЕР: 6 орын (Медеу, Көктөбе, БАО, Шымбұлақ, Президент паркі, Esentai)
+ * ДЕРЕКТЕР ҚОЙМАСЫ: SQLite database (db/travelmap.db)
  */
 
-const DataStore = require('../utils/datastore');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-// Деректер қоймасын инициализациялау
-const placesStore = new DataStore('places.json');
+const dbPath = path.join(__dirname, '../../db/travelmap.db');
 
-// Егер файл бос болса, бастапқы деректерді қосу
-if (placesStore.getAll().length === 0) {
-    const initialPlaces = [
-        {
-            id: 1,
-            name_kk: "Медеу",
-            name_ru: "Медео",
-            name_en: "Medeu",
-            description_kk: "Әлемге әйгілі биіктегі мұз айдыны. Тамаша көрініс және спорт орны.",
-            description_ru: "Всемирно известный высокогорный каток. Потрясающие виды и спортивный объект.",
-            description_en: "World-famous high-altitude ice rink. Stunning views and sports facility.",
-            category: "sports",
-            latitude: 43.157496,
-            longitude: 77.059031,
-            image_url: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=2070",
-            rating: 4.8,
-            visit_count: 2547,
-            details: {
-                workingHours: { weekdays: "09:00 - 21:00", weekends: "08:00 - 22:00" },
-                price: { min: 2000, max: 5000, currency: "KZT" },
-                transport: [
-                    { type: "bus", number: "6", description: "Алматы орталығынан №6 автобус" },
-                    { type: "taxi", description: "Такси ~3000-4000₸" }
-                ]
-            }
+/**
+ * Форматирование места для ответа
+ */
+function formatPlace(place) {
+    return {
+        id: place.id,
+        name_kk: place.name_kk,
+        name_ru: place.name_ru,
+        name_en: place.name_en,
+        description_kk: place.description_kk,
+        description_ru: place.description_ru,
+        description_en: place.description_en,
+        category: place.category,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        image_url: place.image_url,
+        rating: place.rating || 0,
+        visit_count: place.visit_count || 0,
+        details: {
+            workingHours: {
+                weekdays: place.working_hours_weekdays,
+                weekends: place.working_hours_weekends
+            },
+            price: {
+                min: place.price_min,
+                max: place.price_max,
+                currency: place.price_currency
+            },
+            transport: place.transport_info ? JSON.parse(place.transport_info) : []
         },
-        {
-            id: 2,
-            name_kk: "Көктөбе",
-            name_ru: "Кок-Тобе",
-            name_en: "Kok-Tobe",
-            description_kk: "Алматының символы - аспалы жолмен көтерілетін тау",
-            description_ru: "Символ Алматы - гора с канатной дорогой",
-            description_en: "Almaty symbol - mountain with cable car",
-            category: "entertainment",
-            latitude: 43.2325,
-            longitude: 76.9564,
-            image_url: "https://images.unsplash.com/photo-1606117234447-c4067f89e2e0?q=80&w=2070",
-            rating: 4.7,
-            visit_count: 3824,
-            details: {
-                workingHours: { weekdays: "10:00 - 23:00", weekends: "10:00 - 00:00" },
-                price: { min: 1000, max: 3000, currency: "KZT" },
-                transport: [
-                    { type: "cable-car", description: "Аспалы жол" },
-                    { type: "bus", number: "95, 99", description: "Автобус" }
-                ]
-            }
-        },
-        {
-            id: 3,
-            name_kk: "Үлкен Алматы көлі",
-            name_ru: "Большое Алматинское озеро",
-            name_en: "Big Almaty Lake",
-            description_kk: "Таулардағы көгілдір көл, 2511 метр биіктікте",
-            description_ru: "Голубое горное озеро на высоте 2511 метров",
-            description_en: "Blue mountain lake at 2511 meters altitude",
-            category: "nature",
-            latitude: 43.0550,
-            longitude: 76.9895,
-            image_url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070",
-            rating: 4.9,
-            visit_count: 1923,
-            details: {
-                workingHours: { weekdays: "24/7", weekends: "24/7" },
-                price: { min: 0, max: 0, currency: "KZT" },
-                transport: [
-                    { type: "taxi", description: "Только такси или личный автомобиль" }
-                ]
-            }
-        },
-        {
-            id: 4,
-            name_kk: "Шымбұлақ",
-            name_ru: "Шымбулак",
-            name_en: "Shymbulak",
-            description_kk: "Тау-шаңғы курорты",
-            description_ru: "Горнолыжный курорт",
-            description_en: "Ski resort",
-            category: "sports",
-            latitude: 43.2378,
-            longitude: 77.0833,
-            image_url: "https://images.unsplash.com/photo-1551524164-687a55dd1126?q=80&w=2070",
-            rating: 4.7,
-            visit_count: 2156,
-            details: {
-                workingHours: { weekdays: "09:00 - 17:00", weekends: "09:00 - 18:00" },
-                price: { min: 5000, max: 15000, currency: "KZT" },
-                transport: [
-                    { type: "cable-car", description: "Медеу арқылы гондол" }
-                ]
-            }
-        },
-        {
-            id: 5,
-            name_kk: "Бірінші Президент паркі",
-            name_ru: "Парк Первого Президента",
-            name_en: "First President Park",
-            description_kk: "Қала орталығындағы үлкен демалыс паркі",
-            description_ru: "Большой парк для отдыха в центре города",
-            description_en: "Large recreation park in city center",
-            category: "park",
-            latitude: 43.2380,
-            longitude: 76.9490,
-            image_url: "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?q=80&w=2070",
-            rating: 4.5,
-            visit_count: 4521,
-            details: {
-                workingHours: { weekdays: "06:00 - 23:00", weekends: "06:00 - 23:00" },
-                price: { min: 0, max: 0, currency: "KZT" },
-                transport: [
-                    { type: "metro", description: "Станция Абай" },
-                    { type: "bus", number: "множество маршрутов", description: "Много автобусов" }
-                ]
-            }
-        },
-        {
-            id: 6,
-            name_kk: "Esentai Mall",
-            name_ru: "Есентай Молл",
-            name_en: "Esentai Mall",
-            description_kk: "Қаланың ең үлкен сауда орталығы",
-            description_ru: "Крупнейший торговый центр города",
-            description_en: "Largest shopping mall in the city",
-            category: "shopping",
-            latitude: 43.2195,
-            longitude: 76.9317,
-            image_url: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?q=80&w=2070",
-            rating: 4.6,
-            visit_count: 5892,
-            details: {
-                workingHours: { weekdays: "10:00 - 22:00", weekends: "10:00 - 22:00" },
-                price: { min: 0, max: 0, currency: "KZT" },
-                transport: [
-                    { type: "bus", number: "множество", description: "Все общественные маршруты" }
-                ]
-            }
-        }
-    ];
-    
-    initialPlaces.forEach(place => placesStore.add(place));
-    console.log('✅ Места инициализированы');
+        status: place.status,
+        created_at: place.created_at,
+        updated_at: place.updated_at
+    };
 }
 
 /**
- * Получить все места
+ * GET /api/places - Получить все места
  */
 exports.getAllPlaces = (req, res) => {
-    try {
-        const { category, search, limit = 50 } = req.query;
+    const { category, search, limit = 50 } = req.query;
+    
+    const db = new sqlite3.Database(dbPath);
+    
+    let query = 'SELECT * FROM places WHERE status = ?';
+    const params = ['active'];
+    
+    // Фильтр по категории
+    if (category) {
+        query += ' AND category = ?';
+        params.push(category);
+    }
+    
+    // Поиск
+    if (search) {
+        query += ' AND (name_kk LIKE ? OR name_ru LIKE ? OR name_en LIKE ?)';
+        const searchPattern = `%${search}%`;
+        params.push(searchPattern, searchPattern, searchPattern);
+    }
+    
+    // Сортировка и лимит
+    query += ' ORDER BY rating DESC, visit_count DESC LIMIT ?';
+    params.push(parseInt(limit));
+    
+    db.all(query, params, (err, rows) => {
+        db.close();
         
-        let places = placesStore.getAll();
-        
-        // Фильтр по категории
-        if (category) {
-            places = places.filter(p => p.category === category);
+        if (err) {
+            console.error('Error in getAllPlaces:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Не удалось получить места'
+            });
         }
         
-        // Поиск
-        if (search) {
-            const searchLower = search.toLowerCase();
-            places = places.filter(p => 
-                p.name_kk.toLowerCase().includes(searchLower) ||
-                p.name_ru.toLowerCase().includes(searchLower) ||
-                p.name_en.toLowerCase().includes(searchLower)
-            );
-        }
-        
-        // Сортировка по рейтингу
-        places.sort((a, b) => (b.rating - a.rating) || (b.visit_count - a.visit_count));
-        
-        // Лимит
-        places = places.slice(0, parseInt(limit));
+        const places = rows.map(formatPlace);
         
         res.json({
             success: true,
             data: places,
             count: places.length
         });
-    } catch (error) {
-        console.error('Error in getAllPlaces:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Не удалось получить места',
-            message: error.message
-        });
-    }
+    });
 };
 
 /**
- * Получить место по ID
+ * GET /api/places/:id - Получить место по ID
  */
 exports.getPlaceById = (req, res) => {
-    try {
-        const { id } = req.params;
-        const place = placesStore.getById(id);
+    const { id } = req.params;
+    
+    const db = new sqlite3.Database(dbPath);
+    
+    // Получаем место
+    db.get('SELECT * FROM places WHERE id = ?', [id], (err, place) => {
+        if (err) {
+            db.close();
+            console.error('Error in getPlaceById:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Не удалось получить место'
+            });
+        }
         
         if (!place) {
+            db.close();
             return res.status(404).json({
                 success: false,
                 error: 'Место не найдено'
@@ -227,180 +125,352 @@ exports.getPlaceById = (req, res) => {
         }
         
         // Увеличиваем счётчик посещений
-        placesStore.incrementVisitCount(id);
+        db.run('UPDATE places SET visit_count = visit_count + 1 WHERE id = ?', [id], (err) => {
+            if (err) {
+                console.error('Error incrementing visit count:', err);
+            }
+        });
         
-        res.json({
-            success: true,
-            data: place
-        });
-    } catch (error) {
-        console.error('Error in getPlaceById:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Не удалось получить место'
-        });
-    }
+        // Получаем отзывы
+        db.all(
+            `SELECT ur.*, u.username, u.full_name, u.avatar_url
+             FROM user_reviews ur
+             JOIN users u ON ur.user_id = u.id
+             WHERE ur.place_id = ? AND ur.status = 'published'
+             ORDER BY ur.created_at DESC
+             LIMIT 10`,
+            [id],
+            (err, reviews) => {
+                db.close();
+                
+                if (err) {
+                    console.error('Error getting reviews:', err);
+                }
+                
+                const formattedPlace = formatPlace(place);
+                formattedPlace.reviews = reviews || [];
+                
+                res.json({
+                    success: true,
+                    data: formattedPlace
+                });
+            }
+        );
+    });
 };
 
 /**
- * Получить места по категории
+ * GET /api/places/category/:category - Получить места по категории
  */
 exports.getPlacesByCategory = (req, res) => {
-    try {
-        const { category } = req.params;
-        const places = placesStore.filter(p => p.category === category);
-        places.sort((a, b) => b.rating - a.rating);
-        
-        res.json({
-            success: true,
-            data: places,
-            count: places.length
-        });
-    } catch (error) {
-        console.error('Error in getPlacesByCategory:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Не удалось получить места'
-        });
-    }
+    const { category } = req.params;
+    
+    const db = new sqlite3.Database(dbPath);
+    
+    db.all(
+        'SELECT * FROM places WHERE category = ? AND status = ? ORDER BY rating DESC',
+        [category, 'active'],
+        (err, rows) => {
+            db.close();
+            
+            if (err) {
+                console.error('Error in getPlacesByCategory:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Не удалось получить места'
+                });
+            }
+            
+            const places = rows.map(formatPlace);
+            
+            res.json({
+                success: true,
+                data: places,
+                count: places.length
+            });
+        }
+    );
 };
 
 /**
- * Поиск мест
+ * GET /api/places/search - Поиск мест
  */
 exports.searchPlaces = (req, res) => {
-    try {
-        const { q } = req.query;
-        
-        if (!q) {
-            return res.status(400).json({
-                success: false,
-                error: 'Параметр поиска обязателен'
-            });
-        }
-        
-        const searchLower = q.toLowerCase();
-        const places = placesStore.filter(p =>
-            p.name_kk.toLowerCase().includes(searchLower) ||
-            p.name_ru.toLowerCase().includes(searchLower) ||
-            p.name_en.toLowerCase().includes(searchLower) ||
-            (p.description_kk && p.description_kk.toLowerCase().includes(searchLower)) ||
-            (p.description_ru && p.description_ru.toLowerCase().includes(searchLower)) ||
-            (p.description_en && p.description_en.toLowerCase().includes(searchLower))
-        );
-        
-        places.sort((a, b) => b.rating - a.rating);
-        
-        res.json({
-            success: true,
-            data: places.slice(0, 20),
-            count: places.length
-        });
-    } catch (error) {
-        console.error('Error in searchPlaces:', error);
-        res.status(500).json({
+    const { q } = req.query;
+    
+    if (!q) {
+        return res.status(400).json({
             success: false,
-            error: 'Ошибка поиска'
+            error: 'Параметр поиска обязателен'
         });
     }
+    
+    const db = new sqlite3.Database(dbPath);
+    const searchPattern = `%${q}%`;
+    
+    db.all(
+        `SELECT * FROM places 
+         WHERE (name_kk LIKE ? OR name_ru LIKE ? OR name_en LIKE ? 
+                OR description_kk LIKE ? OR description_ru LIKE ? OR description_en LIKE ?)
+         AND status = ?
+         ORDER BY rating DESC LIMIT 20`,
+        [searchPattern, searchPattern, searchPattern, searchPattern, searchPattern, searchPattern, 'active'],
+        (err, rows) => {
+            db.close();
+            
+            if (err) {
+                console.error('Error in searchPlaces:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Ошибка поиска'
+                });
+            }
+            
+            const places = rows.map(formatPlace);
+            
+            res.json({
+                success: true,
+                data: places,
+                count: places.length
+            });
+        }
+    );
 };
 
 /**
- * Создать новое место
+ * POST /api/places - Создать новое место (только для админа)
  */
 exports.createPlace = (req, res) => {
-    try {
-        const place = req.body;
-        const newPlace = placesStore.add(place);
-        
-        res.status(201).json({
-            success: true,
-            data: newPlace
-        });
-    } catch (error) {
-        console.error('Error in createPlace:', error);
-        res.status(500).json({
+    if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({
             success: false,
-            error: 'Не удалось создать место'
+            error: 'Доступ запрещен'
         });
     }
+    
+    const {
+        name_kk, name_ru, name_en,
+        description_kk, description_ru, description_en,
+        category, latitude, longitude, image_url,
+        working_hours_weekdays, working_hours_weekends,
+        price_min, price_max, transport_info
+    } = req.body;
+    
+    // Валидация
+    if (!name_kk || !name_ru || !name_en || !category || !latitude || !longitude) {
+        return res.status(400).json({
+            success: false,
+            error: 'Обязательные поля: name_kk, name_ru, name_en, category, latitude, longitude'
+        });
+    }
+    
+    const db = new sqlite3.Database(dbPath);
+    
+    db.run(
+        `INSERT INTO places (
+            name_kk, name_ru, name_en,
+            description_kk, description_ru, description_en,
+            category, latitude, longitude, image_url,
+            working_hours_weekdays, working_hours_weekends,
+            price_min, price_max, transport_info, created_by
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+            name_kk, name_ru, name_en,
+            description_kk, description_ru, description_en,
+            category, latitude, longitude, image_url,
+            working_hours_weekdays, working_hours_weekends,
+            price_min || 0, price_max || 0,
+            transport_info ? JSON.stringify(transport_info) : null,
+            req.user.id
+        ],
+        function(err) {
+            if (err) {
+                db.close();
+                console.error('Error in createPlace:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Не удалось создать место'
+                });
+            }
+            
+            const placeId = this.lastID;
+            
+            // Логируем действие админа
+            db.run(
+                'INSERT INTO admin_logs (admin_id, action, target_type, target_id, description) VALUES (?, ?, ?, ?, ?)',
+                [req.user.id, 'create_place', 'place', placeId, `Создано место: ${name_ru}`]
+            );
+            
+            // Получаем созданное место
+            db.get('SELECT * FROM places WHERE id = ?', [placeId], (err, place) => {
+                db.close();
+                
+                if (err || !place) {
+                    return res.status(500).json({
+                        success: false,
+                        error: 'Место создано, но не удалось получить данные'
+                    });
+                }
+                
+                res.status(201).json({
+                    success: true,
+                    data: formatPlace(place)
+                });
+            });
+        }
+    );
 };
 
 /**
- * Обновить место
+ * PUT /api/places/:id - Обновить место (только для админа)
  */
 exports.updatePlace = (req, res) => {
-    try {
-        const { id } = req.params;
-        const updates = req.body;
-        
-        const updated = placesStore.update(id, updates);
-        
-        if (!updated) {
+    if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({
+            success: false,
+            error: 'Доступ запрещен'
+        });
+    }
+    
+    const { id } = req.params;
+    const updates = req.body;
+    
+    const db = new sqlite3.Database(dbPath);
+    
+    // Проверяем существование места
+    db.get('SELECT * FROM places WHERE id = ?', [id], (err, place) => {
+        if (err || !place) {
+            db.close();
             return res.status(404).json({
                 success: false,
                 error: 'Место не найдено'
             });
         }
         
-        res.json({
-            success: true,
-            data: updated
+        // Строим запрос обновления
+        const allowedFields = [
+            'name_kk', 'name_ru', 'name_en',
+            'description_kk', 'description_ru', 'description_en',
+            'category', 'latitude', 'longitude', 'image_url',
+            'working_hours_weekdays', 'working_hours_weekends',
+            'price_min', 'price_max', 'status'
+        ];
+        
+        const updateFields = [];
+        const updateValues = [];
+        
+        Object.keys(updates).forEach(key => {
+            if (allowedFields.includes(key)) {
+                updateFields.push(`${key} = ?`);
+                if (key === 'transport_info' && typeof updates[key] === 'object') {
+                    updateValues.push(JSON.stringify(updates[key]));
+                } else {
+                    updateValues.push(updates[key]);
+                }
+            }
         });
-    } catch (error) {
-        console.error('Error in updatePlace:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Не удалось обновить место'
+        
+        if (updateFields.length === 0) {
+            db.close();
+            return res.status(400).json({
+                success: false,
+                error: 'Нет полей для обновления'
+            });
+        }
+        
+        updateFields.push('updated_at = datetime("now")');
+        updateValues.push(id);
+        
+        const query = `UPDATE places SET ${updateFields.join(', ')} WHERE id = ?`;
+        
+        db.run(query, updateValues, (err) => {
+            if (err) {
+                db.close();
+                console.error('Error in updatePlace:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Не удалось обновить место'
+                });
+            }
+            
+            // Логируем действие
+            db.run(
+                'INSERT INTO admin_logs (admin_id, action, target_type, target_id, description) VALUES (?, ?, ?, ?, ?)',
+                [req.user.id, 'update_place', 'place', id, `Обновлено место: ${place.name_ru}`]
+            );
+            
+            // Получаем обновленное место
+            db.get('SELECT * FROM places WHERE id = ?', [id], (err, updatedPlace) => {
+                db.close();
+                
+                if (err || !updatedPlace) {
+                    return res.status(500).json({
+                        success: false,
+                        error: 'Место обновлено, но не удалось получить данные'
+                    });
+                }
+                
+                res.json({
+                    success: true,
+                    data: formatPlace(updatedPlace)
+                });
+            });
         });
-    }
+    });
 };
 
 /**
- * Удалить место
+ * DELETE /api/places/:id - Удалить место (только для админа)
  */
 exports.deletePlace = (req, res) => {
-    try {
-        const { id } = req.params;
-        const deleted = placesStore.delete(id);
-        
-        if (!deleted) {
+    if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({
+            success: false,
+            error: 'Доступ запрещен'
+        });
+    }
+    
+    const { id } = req.params;
+    
+    const db = new sqlite3.Database(dbPath);
+    
+    // Проверяем существование места
+    db.get('SELECT * FROM places WHERE id = ?', [id], (err, place) => {
+        if (err || !place) {
+            db.close();
             return res.status(404).json({
                 success: false,
                 error: 'Место не найдено'
             });
         }
         
-        res.json({
-            success: true,
-            message: 'Место удалено',
-            data: deleted
+        // Мягкое удаление (меняем статус)
+        db.run('UPDATE places SET status = ? WHERE id = ?', ['inactive', id], (err) => {
+            if (err) {
+                db.close();
+                console.error('Error in deletePlace:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Не удалось удалить место'
+                });
+            }
+            
+            // Логируем действие
+            db.run(
+                'INSERT INTO admin_logs (admin_id, action, target_type, target_id, description) VALUES (?, ?, ?, ?, ?)',
+                [req.user.id, 'delete_place', 'place', id, `Удалено место: ${place.name_ru}`],
+                () => {
+                    db.close();
+                    
+                    res.json({
+                        success: true,
+                        message: 'Место удалено',
+                        data: formatPlace(place)
+                    });
+                }
+            );
         });
-    } catch (error) {
-        console.error('Error in deletePlace:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Не удалось удалить место'
-        });
-    }
-};
-
-/**
- * Добавить в избранное
- */
-exports.addToFavorites = (req, res) => {
-    res.json({
-        success: true,
-        message: 'Добавлено в избранное (реализуйте аутентификацию)'
     });
 };
 
-/**
- * Добавить отзыв
- */
-exports.addReview = (req, res) => {
-    res.json({
-        success: true,
-        message: 'Отзыв добавлен (реализуйте аутентификацию)'
-    });
-};
+module.exports = exports;
