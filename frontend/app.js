@@ -93,7 +93,7 @@ function displayPlaces(places) {
     }
     
     container.innerHTML = places.map(place => `
-        <div class="place-card" data-id="${place.id}">
+        <div class="place-card" data-id="${place.id}" onclick="viewPlaceDetails(${place.id})" style="cursor: pointer;">
             <div class="place-image" style="background-image: url('${place.image_url}')">
                 <span class="place-category">${getCategoryName(place.category)}</span>
                 <span class="place-rating">
@@ -119,7 +119,7 @@ function displayPlaces(places) {
                     </div>
                 </div>
                 
-                <button class="view-details-btn" onclick="viewPlaceDetails(${place.id})">
+                <button class="view-details-btn" onclick="event.stopPropagation(); viewPlaceDetails(${place.id})">
                     <i class="fa-solid fa-circle-info"></i> Толығырақ
                 </button>
             </div>
@@ -131,71 +131,9 @@ function displayPlaces(places) {
 // ОРЫН ДЕТАЛДАРЫН КӨРСЕТУ
 // ========================================
 
-async function viewPlaceDetails(placeId) {
-    try {
-        const response = await TravelMapAPI.places.getById(placeId);
-        const place = response.data;
-        
-        // Modal терезе құру
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <span class="modal-close" onclick="closeModal()">&times;</span>
-                
-                <img src="${place.image_url}" alt="${place.name_kk}" class="modal-image">
-                
-                <h2>${place.name_kk}</h2>
-                <p class="modal-description">${place.description_kk}</p>
-                
-                <div class="modal-info">
-                    <div class="info-row">
-                        <strong><i class="fa-solid fa-clock"></i> Жұмыс уақыты:</strong>
-                        <span>Дүйсенбі-Жұма: ${place.details.workingHours.weekdays}</span>
-                        <span>Сенбі-Жексенбі: ${place.details.workingHours.weekends}</span>
-                    </div>
-                    
-                    <div class="info-row">
-                        <strong><i class="fa-solid fa-money-bill"></i> Баға:</strong>
-                        <span>${place.details.price.min}-${place.details.price.max} ${place.details.price.currency}</span>
-                    </div>
-                    
-                    <div class="info-row">
-                        <strong><i class="fa-solid fa-bus"></i> Көлік:</strong>
-                        ${place.details.transport.map(t => `
-                            <span>${t.description}</span>
-                        `).join('')}
-                    </div>
-                    
-                    <div class="info-row">
-                        <strong><i class="fa-solid fa-star"></i> Рейтинг:</strong>
-                        <span>${place.rating} / 5.0</span>
-                    </div>
-                    
-                    <div class="info-row">
-                        <strong><i class="fa-solid fa-eye"></i> Келгендер:</strong>
-                        <span>${place.visit_count} адам</span>
-                    </div>
-                </div>
-                
-                <div class="modal-actions">
-                    <button onclick="showOnMap(${place.latitude}, ${place.longitude}, '${place.name_kk}')">
-                        <i class="fa-solid fa-map-location-dot"></i> Картада көрсету
-                    </button>
-                    <button onclick="openGoogleMaps(${place.latitude}, ${place.longitude})">
-                        <i class="fa-brands fa-google"></i> Google Maps-те ашу
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        modal.style.display = 'flex';
-        
-    } catch (error) {
-        console.error('❌ Орын деталдарын жүктеу қатесі:', error);
-        showNotification('Орын ақпаратын жүктеу мүмкін болмады', 'error');
-    }
+function viewPlaceDetails(placeId) {
+    // Redirect to place details page
+    window.location.href = `place-details.html?id=${placeId}`;
 }
 
 // ========================================
