@@ -23,6 +23,9 @@ let mapMarkers = [];         // Карта маркерлері
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('✅ trАvelMap қосымшасы іске қосылды');
     
+    // Check user authentication and update navigation
+    await checkUserAuth();
+    
     // Backend серверін тексеру
     await checkBackendHealth();
     
@@ -36,6 +39,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Event listener-дерді қосу
     initEventListeners();
 });
+
+// ========================================
+// ПАЙДАЛАНУШЫ АУТЕНТИФИКАЦИЯСЫН ТЕКСЕРУ
+// ========================================
+
+async function checkUserAuth() {
+    const token = localStorage.getItem('token');
+    const loginLink = document.getElementById('login-link');
+    const profileLink = document.getElementById('profile-link');
+    const adminLink = document.getElementById('admin-link');
+    const monitorLink = document.getElementById('monitor-link');
+    
+    if (!token) {
+        // No token, show login link only
+        if (loginLink) loginLink.style.display = 'block';
+        if (profileLink) profileLink.style.display = 'none';
+        if (adminLink) adminLink.style.display = 'none';
+        if (monitorLink) monitorLink.style.display = 'none';
+        return;
+    }
+    
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const user = data.data;
+            
+            // Hide login, show profile
+            if (loginLink) loginLink.style.display = 'none';
+            if (profileLink) profileLink.style.display = 'block';
+            
+            // Show admin links if user is admin
+            if (user.role === 'admin') {
+                if (adminLink) adminLink.style.display = 'block';
+                if (monitorLink) monitorLink.style.display = 'block';
+            }
+        } else {
+            // Invalid token, clear and show login
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            if (loginLink) loginLink.style.display = 'block';
+            if (profileLink) profileLink.style.display = 'none';
+            if (adminLink) adminLink.style.display = 'none';
+            if (monitorLink) monitorLink.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error checking auth:', error);
+    }
+}
 
 // ========================================
 // BACKEND ДЕНСАУЛЫҒЫН ТЕКСЕРУ

@@ -426,6 +426,46 @@
     </div>
 
     <script>
+        // Check if user is admin
+        async function checkAdmin() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Бұл бет тек әкімші үшін. Кіру қажет.');
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    alert('Кіру қажет.');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                const data = await response.json();
+                const user = data.data;
+                
+                if (user.role !== 'admin') {
+                    alert('Бұл бет тек әкімші үшін. Кіру құқығы жоқ.');
+                    window.location.href = 'index.html';
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                alert('Қате орын алды.');
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+        
         let autoRefreshInterval = null;
 
         async function loadHealthStatus() {
@@ -616,9 +656,12 @@
             window.open('http://localhost:3000/api/health', '_blank');
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadHealthStatus();
-            toggleAutoRefresh();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAdmin = await checkAdmin();
+            if (isAdmin) {
+                loadHealthStatus();
+                toggleAutoRefresh();
+            }
         });
     </script>
 </body>

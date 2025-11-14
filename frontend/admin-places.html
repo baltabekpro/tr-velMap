@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Орындарды басқару - TravelMap Admin</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .admin-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .places-table {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <div class="admin-header-content">
+            <h1><i class="fa-solid fa-location-dot"></i> Орындарды басқару</h1>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" onclick="window.location.href='admin.html'">
+                    <i class="fa-solid fa-arrow-left"></i> Админ панеліне қайту
+                </button>
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Шығу
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="places-table">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Барлық орындар</h2>
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fa-solid fa-plus"></i> Жаңа орын қосу
+                </button>
+            </div>
+            
+            <div id="loading" style="text-align: center; padding: 40px; display: none;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #667eea;"></i>
+            </div>
+            
+            <table id="places-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Атауы (ҚЗ)</th>
+                        <th>Категория</th>
+                        <th>Рейтинг</th>
+                        <th>Келушілер</th>
+                        <th>Статус</th>
+                        <th>Әрекеттер</th>
+                    </tr>
+                </thead>
+                <tbody id="places-tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Place Modal -->
+    <div id="place-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Жаңа орын қосу</h2>
+            <form id="place-form" onsubmit="savePlace(event)">
+                <div class="form-group">
+                    <label>Атауы (қазақша) *</label>
+                    <input type="text" id="name_kk" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Атауы (орысша) *</label>
+                    <input type="text" id="name_ru" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Атауы (ағылшынша) *</label>
+                    <input type="text" id="name_en" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Сипаттама (қазақша)</label>
+                    <textarea id="description_kk"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Сипаттама (орысша)</label>
+                    <textarea id="description_ru"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Сипаттама (ағылшынша)</label>
+                    <textarea id="description_en"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Категория *</label>
+                    <select id="category" required>
+                        <option value="sports">Спорт</option>
+                        <option value="nature">Табиғат</option>
+                        <option value="entertainment">Ойын-сауық</option>
+                        <option value="culture">Мәдениет</option>
+                        <option value="park">Саябақ</option>
+                        <option value="shopping">Сауда</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Кеңдік *</label>
+                    <input type="number" step="0.000001" id="latitude" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Ұзақтық *</label>
+                    <input type="number" step="0.000001" id="longitude" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Сурет URL</label>
+                    <input type="url" id="image_url">
+                </div>
+                
+                <div class="form-group">
+                    <label>Жұмыс уақыты (апта)</label>
+                    <input type="text" id="working_hours_weekdays" placeholder="09:00 - 18:00">
+                </div>
+                
+                <div class="form-group">
+                    <label>Жұмыс уақыты (демалыс)</label>
+                    <input type="text" id="working_hours_weekends" placeholder="10:00 - 20:00">
+                </div>
+                
+                <div class="form-group">
+                    <label>Баға (мин)</label>
+                    <input type="number" id="price_min" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label>Баға (макс)</label>
+                    <input type="number" id="price_max" value="0">
+                </div>
+                
+                <input type="hidden" id="edit-place-id">
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Болдырмау</button>
+                    <button type="submit" class="btn btn-primary">Сақтау</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:3000';
+        let currentUser = null;
+        
+        // Check admin authentication
+        async function checkAdmin() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                const data = await response.json();
+                currentUser = data.data;
+                
+                if (currentUser.role !== 'admin') {
+                    alert('Кіру құқығы жоқ. Тек әкімші кіре алады.');
+                    window.location.href = 'index.html';
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+        
+        // Load all places
+        async function loadPlaces() {
+            const token = localStorage.getItem('token');
+            const loading = document.getElementById('loading');
+            const tbody = document.getElementById('places-tbody');
+            
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/places?limit=100`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    tbody.innerHTML = data.data.map(place => `
+                        <tr>
+                            <td>${place.id}</td>
+                            <td>${place.name_kk}</td>
+                            <td>${place.category}</td>
+                            <td>${place.rating.toFixed(1)}</td>
+                            <td>${place.visit_count}</td>
+                            <td>${place.status === 'active' ? '<span style="color: green;">✓ Белсенді</span>' : '<span style="color: red;">✗ Белсенді емес</span>'}</td>
+                            <td>
+                                <button class="btn btn-secondary" style="padding: 5px 10px; margin-right: 5px;" onclick="editPlace(${place.id})">
+                                    <i class="fa-solid fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deletePlace(${place.id})">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading places:', error);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ff4757;">Қате орын алды</td></tr>';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+        
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Жаңа орын қосу';
+            document.getElementById('place-form').reset();
+            document.getElementById('edit-place-id').value = '';
+            document.getElementById('place-modal').style.display = 'flex';
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('place-modal').style.display = 'none';
+        }
+        
+        // Edit place
+        async function editPlace(id) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/places/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const place = data.data;
+                    document.getElementById('modal-title').textContent = 'Орынды өңдеу';
+                    document.getElementById('edit-place-id').value = place.id;
+                    document.getElementById('name_kk').value = place.name_kk;
+                    document.getElementById('name_ru').value = place.name_ru;
+                    document.getElementById('name_en').value = place.name_en;
+                    document.getElementById('description_kk').value = place.description_kk || '';
+                    document.getElementById('description_ru').value = place.description_ru || '';
+                    document.getElementById('description_en').value = place.description_en || '';
+                    document.getElementById('category').value = place.category;
+                    document.getElementById('latitude').value = place.latitude;
+                    document.getElementById('longitude').value = place.longitude;
+                    document.getElementById('image_url').value = place.image_url || '';
+                    document.getElementById('working_hours_weekdays').value = place.details.workingHours.weekdays || '';
+                    document.getElementById('working_hours_weekends').value = place.details.workingHours.weekends || '';
+                    document.getElementById('price_min').value = place.details.price.min;
+                    document.getElementById('price_max').value = place.details.price.max;
+                    
+                    document.getElementById('place-modal').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error loading place:', error);
+                alert('Орынды жүктеу қатесі');
+            }
+        }
+        
+        // Save place
+        async function savePlace(event) {
+            event.preventDefault();
+            
+            const token = localStorage.getItem('token');
+            const placeId = document.getElementById('edit-place-id').value;
+            
+            const placeData = {
+                name_kk: document.getElementById('name_kk').value,
+                name_ru: document.getElementById('name_ru').value,
+                name_en: document.getElementById('name_en').value,
+                description_kk: document.getElementById('description_kk').value,
+                description_ru: document.getElementById('description_ru').value,
+                description_en: document.getElementById('description_en').value,
+                category: document.getElementById('category').value,
+                latitude: parseFloat(document.getElementById('latitude').value),
+                longitude: parseFloat(document.getElementById('longitude').value),
+                image_url: document.getElementById('image_url').value,
+                working_hours_weekdays: document.getElementById('working_hours_weekdays').value,
+                working_hours_weekends: document.getElementById('working_hours_weekends').value,
+                price_min: parseInt(document.getElementById('price_min').value),
+                price_max: parseInt(document.getElementById('price_max').value)
+            };
+            
+            try {
+                const url = placeId ? `${API_URL}/api/places/${placeId}` : `${API_URL}/api/places`;
+                const method = placeId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(placeData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert(placeId ? 'Орын сәтті жаңартылды!' : 'Орын сәтті қосылды!');
+                    closeModal();
+                    loadPlaces();
+                } else {
+                    alert('Қате: ' + (data.error || 'Белгісіз қате'));
+                }
+            } catch (error) {
+                console.error('Error saving place:', error);
+                alert('Сақтау қатесі');
+            }
+        }
+        
+        // Delete place
+        async function deletePlace(id) {
+            if (!confirm('Осы орынды өшіруге сенімдісіз бе?')) {
+                return;
+            }
+            
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/places/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    alert('Орын өшірілді');
+                    loadPlaces();
+                } else {
+                    alert('Өшіру қатесі');
+                }
+            } catch (error) {
+                console.error('Error deleting place:', error);
+                alert('Өшіру қатесі');
+            }
+        }
+        
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+        
+        // Initialize
+        window.addEventListener('load', async () => {
+            const isAdmin = await checkAdmin();
+            if (isAdmin) {
+                loadPlaces();
+            }
+        });
+    </script>
+</body>
+</html>
