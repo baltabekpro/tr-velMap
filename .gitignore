@@ -4,3 +4,9 @@ node_modules/
 *.log
 vendor/
 package-lock.json
+
+# Database files (SQLite)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
